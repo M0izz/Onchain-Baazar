@@ -1,0 +1,42 @@
+# Onchain Bazaar — Root .gitignore
+
+# ─── Node / Contracts ───
+node_modules/
+.env
+contracts/.env
+contracts/cache/
+contracts/artifacts/
+contracts/deployments.json
+
+# ─── Python / Backend ───
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+backend/.env
+backend/venv/
+backend/.venv/
+*.egg-info/
+dist/
+build/
+
+# ─── Frontend ───
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# ─── OS / Editor ───
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+
+# ─── Logs ───
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

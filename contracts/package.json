@@ -1,0 +1,31 @@
+{
+  "name": "onchain-bazaar-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts suite for Onchain Bazaar ERC-8004 AI Agent Marketplace on BSC Testnet",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "node:start": "npx hardhat node",
+    "deploy:testnet": "npx hardhat run scripts/deploy.js --network bscTestnet",
+    "deploy:local": "npx hardhat run scripts/deploy.js --network localhost",
+    "sync:addresses": "node scripts/sync-addresses.js",
+    "verify:testnet": "node scripts/verify.js"
+  },
+  "keywords": [
+    "erc-8004",
+    "bnb-chain",
+    "altana",
+    "pancakeswap",
+    "ai-agents"
+  ],
+  "author": "Moizz",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.4"
+  }
+}
