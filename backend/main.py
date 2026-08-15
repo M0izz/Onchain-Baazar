@@ -1,3 +1,4 @@
+import re
 import time
 import uuid
 import asyncio
@@ -6,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Dict, Any
 
 from config import settings
@@ -56,32 +57,55 @@ app.add_middleware(
 )
 
 
-# ─── Request / Response Models ────────────────────────────────────────────────
+# ─── Request / Response Models & Security Validation ─────────────────────────
+ETH_ADDR_REGEX = re.compile(r"^0x[a-fA-F0-9]{40}$")
+
 class SessionCreateRequest(BaseModel):
     userAddress: str
     agentId: str
-    spendCapBNB: float
-    durationHours: int
+    spendCapBNB: float = Field(gt=0, le=100.0, description="Spend cap must be between 0 and 100 tBNB")
+    durationHours: int = Field(gt=0, le=720, description="Duration must be between 1 and 720 hours")
     permissionsHash: Optional[str] = "0x" + "0" * 64
     txHash: Optional[str] = None
+
+    @field_validator("userAddress")
+    @classmethod
+    def validate_address(cls, v: str) -> str:
+        if not ETH_ADDR_REGEX.match(v):
+            raise ValueError("Invalid EVM user address format")
+        return v
 
 class SessionRevokeRequest(BaseModel):
     sessionId: str
     userAddress: str
     txHash: Optional[str] = None
 
+    @field_validator("userAddress")
+    @classmethod
+    def validate_address(cls, v: str) -> str:
+        if not ETH_ADDR_REGEX.match(v):
+            raise ValueError("Invalid EVM user address format")
+        return v
+
 class SessionExtendRequest(BaseModel):
     sessionId: str
     userAddress: str
-    additionalHours: int
-    additionalCapBNB: float = 0.0
+    additionalHours: int = Field(gt=0, le=168, description="Extension duration must be between 1 and 168 hours")
+    additionalCapBNB: float = Field(ge=0, le=50.0, description="Additional cap must be positive")
     txHash: Optional[str] = None
+
+    @field_validator("userAddress")
+    @classmethod
+    def validate_address(cls, v: str) -> str:
+        if not ETH_ADDR_REGEX.match(v):
+            raise ValueError("Invalid EVM user address format")
+        return v
 
 class TaskSimulateRequest(BaseModel):
     sessionId: str
     agentId: str
     taskType: str
-    amountBNB: float = 0.01
+    amountBNB: float = Field(gt=0, le=10.0, description="Task spend amount must be positive")
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
