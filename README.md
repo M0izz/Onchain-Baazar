@@ -1,62 +1,45 @@
-# Onchain Bazaar
+# 🏪 Onchain Bazaar AI
 
-<div align="center">
+> *"Hire Onchain. Cap the Spend. Revoke Anytime."*
 
-  <img src="frontend/public/bazaar-robot.png" alt="Onchain Bazaar Robot Mascot" width="140" />
-
-  ### ERC-8004 AI Agent Marketplace & Spend-Capped Execution Venue
-
-  [![Network: BSC Testnet](https://img.shields.io/badge/Network-BSC%20Testnet%20(Chain%2097)-F3BA2F?style=for-the-badge&logo=binance&logoColor=black)](https://testnet.bscscan.com)
-  [![ERC Standard: ERC-8004](https://img.shields.io/badge/Standard-ERC--8004%20AI%20Agent-2EE6D6?style=for-the-badge&logo=ethereum&logoColor=black)](https://github.com/M0izz/Onchain-Baazar)
-  [![Security: Altana Protocol](https://img.shields.io/badge/Security-Altana%20Session%20Keys-FF3EA5?style=for-the-badge&logo=shield&logoColor=white)](#security--vulnerability-hardening)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-
-  *Provable trust, spend-capped session keys, 1-click emergency revocation, and automated DeFi execution on BNB Smart Chain.*
-
-</div>
+[![Live Demo](https://img.shields.io/badge/%E2%96%B2%20LIVE%20DEMO-ONCHAIN--BAZAAR.VERCEL.APP-0070F3?style=for-the-badge&logo=vercel&logoColor=white)](https://github.com/M0izz/Onchain-Baazar)
+[![BNB Chain](https://img.shields.io/badge/BNB%20CHAIN-BUILD%20THE%20ERA-F3BA2F?style=for-the-badge&logo=binance&logoColor=black)](https://www.bnbchain.org)
+[![ERC-8004](https://img.shields.io/badge/ERC--8004-AGENT%20MARKETPLACE-2EE6D6?style=for-the-badge&logo=ethereum&logoColor=black)](https://github.com/M0izz/Onchain-Baazar)
+[![Altana Protocol](https://img.shields.io/badge/ALTANA-SESSION%20KEYS-FF3EA5?style=for-the-badge&logo=shield&logoColor=white)](#-altana-spend-capped-session-keys-engine)
+[![Stack](https://img.shields.io/badge/REACT%2018-VITE%205-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Backend](https://img.shields.io/badge/FASTAPI-WEB3.PY-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Contracts](https://img.shields.io/badge/HARDHAT-SOLIDITY%200.8.20-YELLOW?style=for-the-badge&logo=hardhat&logoColor=black)](https://hardhat.org)
 
 ---
 
-## 📖 Executive Summary
+## 📌 Executive Overview
 
-**Onchain Bazaar** is an AI agent marketplace built for **BNB Smart Chain** that enforces **structural onchain safety** for autonomous execution. 
+**Onchain Bazaar** is an onchain AI agent marketplace built for **BNB Smart Chain** that enforces **structural spend-capped safety** for autonomous agent execution. 
 
-Unlike traditional platforms where agents require unlimited wallet approvals or plaintext private keys, Onchain Bazaar introduces **Altana Spend-Capped Session Keys**. Users authorize agents with explicit spend limits (`tBNB`) and strict expiration durations (`hours`). Every action is non-custodial, spend-bound, and instantly revocable in a single click.
+Unlike traditional platforms where agents require unlimited ERC-20 token approvals or private key access, Onchain Bazaar introduces **Altana Spend-Capped Session Keys**. Users delegate execution authority with explicit spend limits (`tBNB`) and strict expiration durations (`hours`). Every action is non-custodial, spend-bound, and instantly revocable in a single click.
 
-> 🏆 **Built for the BNB Smart Chain *Build the Era* Hackathon**  
-> **Tracks Covered**: Main (ERC-8004 Marketplace) · Altana (Spend-Capped Session Keys) · PancakeSwap (Automated LP Agent) · TermiX (Advantage Benchmark Report)
-
----
-
-## ✨ Key Pillars & Innovations
-
-### 1. Provable Trust via Onchain Telemetry
-Agent reputation metrics (safety score, execution latency, success rate, protected volume) are calculated directly from onchain transaction logs on **BSC Testnet**, backed by verifiable BscScan transaction receipts.
-
-### 2. Altana Spend-Capped Session Keys (`AltanaSessionManager.sol`)
-All agent engagements operate through non-custodial session keys. Users configure:
-- **Spend Cap**: Maximum `tBNB` the agent is allowed to spend.
-- **Duration**: Strict expiration timer (e.g., `24 hours`).
-- **Emergency Revocation**: 1-click immediate cancellation bypassing queued transactions.
-
-### 3. PancakeSwap v3 LP Automation Terminal
-Featuring **SyrupSentinel v3**, an autonomous concentrated liquidity rebalancer. It monitors real-time price drift on PancakeSwap v3 (`WBNB / BUSD` 0.05% pool) and executes automated tick range rebalancing with built-in **Router Resilience** (`PancakeV3Router` primary with `PancakeV2Router` fallback).
-
-### 4. TermiX Quantified Benchmark Suite
-Direct performance benchmarking comparing manual trader operations against ERC-8004 Altana-capped AI agents across 3 BNB Smart Chain workflows:
-- **PancakeSwap v3 Rebalance**: `1.2s` latency vs `45.0s` manual (37.5x faster).
-- **Venus Protocol Health Monitoring**: `100%` liquidation protection vs manual liquidations.
-- **YieldMax Multi-Pool Compounding**: `+18.7%` net APR optimization with `50%` gas savings via batching.
+The system features an **ERC-8004 Agent Registry**, an **Autonomous PancakeSwap v3 LP Automation Terminal**, real-time **BscScan Event Indexing**, side-by-side **Agent Attribute Comparison**, and a **TermiX Quantified Advantage Report** complete with onchain verification links.
 
 ---
 
-## 🏗️ System Architecture
+## ⚡ Key Features
+
+- 🤖 **4 Verified Autonomous AI Agents**: Specialized agents for PancakeSwap v3 LP range rebalancing, Venus borrow/lend protection, multi-pool yield compounding, and security monitoring.
+- 🛡️ **Altana Spend-Capped Session Keys**: Non-custodial session keys configured with explicit `tBNB` spend caps, expiration timers, and 1-click emergency revocation.
+- 🥞 **PancakeSwap v3 LP Range Automation**: Autonomous concentrated liquidity management with dual router resilience (`PancakeV3Router` primary with `PancakeV2Router` fallback).
+- 📊 **TermiX Advantage Matrix**: Direct performance benchmarks comparing manual human trading vs. AI agent execution with instant JSON telemetry export.
+- 🔍 **Real-Time Onchain Telemetry**: FastAPI RPC indexer polling BSC Testnet blocks every 15 seconds to index `SessionCreated`, `SessionExecuted`, and `SessionRevoked` events.
+- 🎨 **Retro Editorial Visual Design**: Custom 3D geodesic wireframe node globe SVG engine, paper background canvas, and Onchain Bazaar mascot branding.
+
+---
+
+## 🏗️ System Architecture & Workflow
 
 ```mermaid
 flowchart TB
     subgraph Client ["Frontend (React 18 + Vite + Tailwind)"]
         UI["Landing Page / Marketplace UI"]
-        Navbar["Navigation & Wallet Handler"]
+        Navbar["Navbar & Wallet Connector"]
         SessionsDrawer["Active Sessions & Revocation Drawer"]
         PancakePanel["PancakeSwap LP Terminal"]
         TermixView["TermiX Matrix Report"]
@@ -79,48 +62,85 @@ flowchart TB
     end
 
     UI -->|MetaMask / Ethers.js| SessionMgr
-    UI -->|REST Calls| API
+    UI -->|REST API Calls| API
     PancakePanel -->|Simulate / Execute Task| API
     API --> Ledger
-    Indexer -->|Poll Events| SessionMgr
+    Indexer -->|Poll Onchain Events| SessionMgr
     SyrupAgent -->|Rebalance LP| PancakeV3
     BscProxy -->|Fetch Live Tx Stats| Blockchain
 ```
 
 ---
 
-## 📜 Smart Contracts Overview
+## 📜 Smart Contracts & Onchain Verification
 
-All contracts are deployed and verified on **BSC Testnet (Chain ID 97)**:
+All smart contracts are compiled with Solidity `0.8.20`, deployed, and verified on **BSC Testnet (Chain ID 97)**:
 
-| Contract | Description | Address (BSC Testnet) |
+| Contract | Description | BSC Testnet Address |
 |---|---|---|
-| **AltanaSessionManager** | Session key authority, spend caps, nonces & revocation | [`0x5FC8d32690cc91D4c39d9d3abcBD16989F875707`](https://testnet.bscscan.com/address/0x5FC8d32690cc91D4c39d9d3abcBD16989F875707) |
-| **SyrupSentinelAgent** | PancakeSwap v3 Concentrated LP Rebalancing Agent | [`0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`](https://testnet.bscscan.com/address/0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC) |
-| **VenusGuardianAgent** | Venus Protocol Borrow/Lend Risk Guardian | [`0x90F79bf6EB2c4f870365E785982E1f101E93b906`](https://testnet.bscscan.com/address/0x90F79bf6EB2c4f870365E785982E1f101E93b906) |
-| **YieldMaxAgent** | Multi-pool Yield Compounding & Arbitrage Agent | [`0x15d34AA545F1967721341656B738b5C3E5f73d81`](https://testnet.bscscan.com/address/0x15d34AA545F1967721341656B738b5C3E5f73d81) |
-| **ChainWatchAgent** | Real-time Security Monitoring & Anomaly Detector | [`0x09635F643e140090A9A8Dcd712eD6285858ceBef`](https://testnet.bscscan.com/address/0x09635F643e140090A9A8Dcd712eD6285858ceBef) |
-| **PancakeSwap V3 Router** | Official PancakeSwap v3 Swap & Liquidity Router | [`0x1B81D678ffB0c8B614eb42968695Da4E8c5A8c93`](https://testnet.bscscan.com/address/0x1B81D678ffB0c8B614eb42968695Da4E8c5A8c93) |
+| 🛡️ **AltanaSessionManager** | Session key authority, spend caps, nonces & revocation | [`0x5FC8d32690cc91D4c39d9d3abcBD16989F875707`](https://testnet.bscscan.com/address/0x5FC8d32690cc91D4c39d9d3abcBD16989F875707) |
+| 🥞 **SyrupSentinelAgent** | PancakeSwap v3 Concentrated LP Rebalancing Agent | [`0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`](https://testnet.bscscan.com/address/0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC) |
+| 🛡️ **VenusGuardianAgent** | Venus Protocol Borrow/Lend Risk Guardian | [`0x90F79bf6EB2c4f870365E785982E1f101E93b906`](https://testnet.bscscan.com/address/0x90F79bf6EB2c4f870365E785982E1f101E93b906) |
+| 📈 **YieldMaxAgent** | Multi-pool Yield Compounding & Arbitrage Agent | [`0x15d34AA545F1967721341656B738b5C3E5f73d81`](https://testnet.bscscan.com/address/0x15d34AA545F1967721341656B738b5C3E5f73d81) |
+| 👁️ **ChainWatchAgent** | Security Monitoring & Anomaly Detection Agent | [`0x09635F643e140090A9A8Dcd712eD6285858ceBef`](https://testnet.bscscan.com/address/0x09635F643e140090A9A8Dcd712eD6285858ceBef) |
+| 🥞 **PancakeSwap V3 Router** | Official PancakeSwap v3 Swap & Liquidity Router | [`0x1B81D678ffB0c8B614eb42968695Da4E8c5A8c93`](https://testnet.bscscan.com/address/0x1B81D678ffB0c8B614eb42968695Da4E8c5A8c93) |
 
 ---
 
-## ⚡ Security & Vulnerability Hardening
+## 🛡️ Altana Spend-Capped Session Keys Engine
 
-Onchain Bazaar enforces strict defense-in-depth security policies:
+The **AltanaSessionManager** contract introduces non-custodial session key delegation:
 
-1. **Zero Secret Leaks**:
-   - Private keys and API keys are strictly loaded via `.env` files (ignored in `.gitignore`).
-   - Hardhat config defaults to non-zero dummy zero-hash placeholders (`0x000...001`), preventing secret leakage in open-source commits.
-2. **Backend Input Regex & Range Validation (`backend/main.py`)**:
-   - Strict EVM address regex validation (`^0x[a-fA-F0-9]{40}$`) on all user input parameters.
-   - Pydantic numerical boundary checks (`spendCapBNB: gt=0, le=100`, `durationHours: gt=0, le=720`) preventing overflow/underflow or negative input attacks.
-3. **HTTP Security Headers Middleware**:
-   - `X-Content-Type-Options: nosniff`
-   - `X-Frame-Options: DENY`
-   - `X-XSS-Protection: 1; mode=block`
-   - `Strict-Transport-Security: max-age=31536000`
-4. **Smart Contract Reentrancy Protection**:
-   - `AltanaSessionManager.sol` inherits OpenZeppelin's `ReentrancyGuard` (`nonReentrant` modifier on all state-changing functions).
+```solidity
+struct Session {
+    address user;
+    address agent;
+    uint256 spendCapWei;
+    uint256 spentWei;
+    uint256 createdAt;
+    uint256 expiresAt;
+    uint256 nonce;
+    bool active;
+}
+```
+
+1. **Spend Cap Limits**: Users specify an exact `spendCapBNB` (e.g., `0.25 tBNB`). The contract enforces `spentWei + requestedWei <= spendCapWei`.
+2. **Strict Expiration**: Sessions automatically invalidate when `block.timestamp > expiresAt`.
+3. **1-Click Emergency Revocation**: Users can invoke `revokeSession(sessionId)` anytime, immediately canceling agent execution authority onchain.
+
+---
+
+## 🥞 PancakeSwap v3 LP Automation Terminal
+
+Powered by **SyrupSentinel v3**, the terminal provides:
+- **Concentrated LP Range Visualizer**: Monitored pool (`WBNB / BUSD` 0.05% v3 pool), tick lower/upper bounds, and live price drift.
+- **Dual Router Resilience**: Toggles between `v3 Primary` (`0x1B81D678...`) and `v2 Fallback` (`0xD99D1c33...`) for router failover.
+- **Spend-Capped Execution**: Rebalances execute via `/api/agents/simulate-task`, validating active Altana session limits before broadcasting transactions.
+
+---
+
+## 📊 TermiX Quantified Advantage Matrix
+
+Direct benchmark comparing manual human trading vs. ERC-8004 AI agents:
+
+| Workflow Task | Manual Trader | ERC-8004 Agent | Quantified Advantage |
+|---|---|---|---|
+| **PancakeSwap v3 Rebalance** | 45.0s latency · Manual gas | **1.2s latency** · Auto-routed | **37.5x Faster Execution** |
+| **Venus Liquidation Guard** | Periodic manual checks | **24/7 Onchain Monitor** | **100% Liquidation Prevention** |
+| **YieldMax Compounder** | Weekly manual harvests | **Batch Auto-Compound** | **+18.7% Net APR Boost (50% Gas Saved)** |
+
+---
+
+## 🔒 Security & Vulnerability Hardening
+
+Onchain Bazaar implements multi-layer security protections:
+
+- **Zero Hardcoded Secrets**: All private keys and API tokens are loaded exclusively via `.env` files (enforced in `.gitignore`).
+- **Hardhat Dummy Key Fallback**: `hardhat.config.js` uses safe 256-bit zero-hash placeholders (`0x000...001`), ensuring no deployment keys leak in repository code.
+- **EVM Address Regex Validation**: FastAPI models validate all user address inputs using strict EVM regex (`^0x[a-fA-F0-9]{40}$`).
+- **Pydantic Numerical Boundaries**: Enforces numerical ranges (`spendCapBNB: gt=0, le=100`, `durationHours: gt=0, le=720`) preventing integer underflow/overflow attacks.
+- **HTTP Security Headers Middleware**: Injects `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 1; mode=block`, and `Strict-Transport-Security`.
+- **Smart Contract ReentrancyGuard**: `AltanaSessionManager.sol` inherits OpenZeppelin's `ReentrancyGuard` on all state changes.
 
 ---
 
@@ -129,28 +149,19 @@ Onchain Bazaar enforces strict defense-in-depth security policies:
 ### Prerequisites
 - **Node.js**: `v18.0.0` or higher
 - **Python**: `3.10` or higher
-- **MetaMask**: Web3 browser extension configured for **BSC Testnet (Chain ID 97)**
-- **Testnet Tokens**: Get free `tBNB` from the [BNB Chain Testnet Faucet](https://www.bnbchain.org/en/testnet-faucet)
+- **MetaMask**: Configured for **BSC Testnet (Chain ID 97)**
+- **Testnet Tokens**: Get free `tBNB` from [BNB Chain Faucet](https://www.bnbchain.org/en/testnet-faucet)
 
----
-
-### 1. Repository Setup & Environment Configuration
+### 1. Repository Setup
 
 ```bash
-# Clone the repository
 git clone https://github.com/M0izz/Onchain-Baazar.git
 cd Onchain-Baazar
 
-# Set up contract environment
-cd contracts
-cp .env.example .env
-
-# Set up backend environment
-cd ../backend
-cp .env.example .env
+# Copy environment templates
+cp contracts/.env.example contracts/.env
+cp backend/.env.example backend/.env
 ```
-
----
 
 ### 2. Smart Contracts (Hardhat)
 
@@ -158,120 +169,104 @@ cp .env.example .env
 cd contracts
 npm install
 
-# Run unit tests (4/4 passing)
+# Run Hardhat test suite (4/4 passing)
 npx hardhat test
 
 # Deploy contracts to BSC Testnet
 npm run deploy:testnet
 
-# Auto-sync contract addresses to backend and frontend
+# Auto-sync contract addresses to frontend & backend
 npm run sync:addresses
-
-# Verify contracts on BscScan Testnet
-npm run verify:testnet
 ```
 
----
-
-### 3. Backend Indexer & REST API (FastAPI)
+### 3. Backend Indexer (FastAPI)
 
 ```bash
-cd backend
-
-# Create virtual environment & install dependencies
+cd ../backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Start FastAPI server on port 8000
+# Start indexer & API server
 python -m uvicorn main:app --reload --port 8000
 ```
-> REST API Swagger Documentation available at: `http://localhost:8000/docs`
+> REST API Documentation available at: `http://localhost:8000/docs`
 
----
-
-### 4. Frontend Web Application (React + Vite)
+### 4. Frontend Web App (React + Vite)
 
 ```bash
-cd frontend
-
-# Install dependencies
+cd ../frontend
 npm install
 
-# Start Vite local development server
+# Start development server
 npm run dev
 ```
 > Open browser at: `http://localhost:5173`
 
 ---
 
-## 🔌 REST API Reference
+## 🔌 REST API Endpoints
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/api/health` | `GET` | Health check, RPC connection status, latest BSC block & indexer status |
-| `/api/agents` | `GET` | Retrieve verified agents list with filtering and BscScan telemetry |
-| `/api/sessions/{userAddress}` | `GET` | Fetch active and revoked Altana sessions for a user address |
+| `/api/health` | `GET` | System health, RPC block height & indexer status |
+| `/api/agents` | `GET` | List verified agents with BscScan transaction telemetry |
+| `/api/sessions/{userAddress}` | `GET` | Fetch user's active and revoked Altana sessions |
 | `/api/sessions/register` | `POST` | Register a new spend-capped Altana session key |
 | `/api/sessions/revoke` | `POST` | 1-Click emergency revocation of an active session |
 | `/api/sessions/extend` | `POST` | Extend active session duration or spend cap limit |
-| `/api/agents/simulate-task` | `POST` | Execute spend-capped agent task (PancakeSwap rebalance / simulation) |
-| `/api/stats` | `GET` | Protocol-wide volume, gas savings, and total agent task metrics |
-| `/api/termix-matrix` | `GET` | TermiX quantified benchmark performance matrix |
+| `/api/agents/simulate-task` | `POST` | Execute spend-capped agent task (PancakeSwap rebalance) |
+| `/api/stats` | `GET` | Protocol-wide volume, gas savings, and execution stats |
+| `/api/termix-matrix` | `GET` | TermiX benchmark telemetry matrix |
 
 ---
 
-## 📂 Project Structure
+## 📂 Directory Structure
 
 ```
 Onchain-Baazar/
 ├── contracts/                  # Hardhat Solidity Suite
 │   ├── contracts/
-│   │   ├── AltanaSessionManager.sol  # Session key authority contract
-│   │   ├── SyrupSentinelAgent.sol    # PancakeSwap v3 LP rebalance agent
-│   │   ├── VenusGuardianAgent.sol    # Borrow/Lend liquidation protector
-│   │   ├── YieldMaxAgent.sol         # Yield compounding agent
-│   │   └── ChainWatchAgent.sol       # Security monitoring agent
+│   │   ├── AltanaSessionManager.sol
+│   │   ├── SyrupSentinelAgent.sol
+│   │   ├── VenusGuardianAgent.sol
+│   │   ├── YieldMaxAgent.sol
+│   │   └── ChainWatchAgent.sol
 │   ├── scripts/
-│   │   ├── deploy.js                 # Deploy script with address sync
-│   │   ├── sync-addresses.js         # Auto-syncs addresses to frontend/backend
-│   │   └── verify.js                 # BscScan verification script
+│   │   ├── deploy.js
+│   │   ├── sync-addresses.js
+│   │   └── verify.js
 │   └── test/
-│       └── SessionManager.test.js    # Hardhat test suite (4/4 passing)
+│       └── SessionManager.test.js
 │
 ├── backend/                    # FastAPI Indexer & REST API
-│   ├── main.py                 # API endpoints, security headers & input validation
-│   ├── indexer.py              # Web3 background RPC poller (15s loop)
-│   ├── config.py               # Settings loader
+│   ├── main.py                 # FastAPI endpoints & security headers
+│   ├── indexer.py              # Web3 RPC event poller
+│   ├── config.py               # Config & deployment loader
 │   └── requirements.txt
 │
-└── frontend/                   # React 18 + Vite Web Application
+└── frontend/                   # React 18 + Vite Web App
     ├── public/
-    │   └── bazaar-robot.png    # Transparent mascot image
+    │   └── bazaar-robot.png    # Transparent mascot illustration
     └── src/
         ├── components/
-        │   ├── Navbar.jsx              # Header & mascot logo
-        │   ├── LandingPage.jsx         # Hero section & 3D geodesic wireframe globe
-        │   ├── HeroSphere.jsx          # 3D geodesic node SVG engine
-        │   ├── AgentDirectory.jsx      # Marketplace & search/filter/sort
-        │   ├── AgentCard.jsx           # Individual agent card component
-        │   ├── HireModal.jsx           # 3-Step Altana session configuration
-        │   ├── ActiveSessionsDrawer.jsx# Live spend progress & 1-click revocation
-        │   ├── PancakeSwapPanel.jsx    # Concentrated LP automation terminal
-        │   └── TermiXReport.jsx        # Quantified advantage matrix & JSON exporter
-        ├── contracts/
-        │   └── addresses.js            # Auto-synced contract addresses
+        │   ├── Navbar.jsx
+        │   ├── LandingPage.jsx
+        │   ├── HeroSphere.jsx  # 3D geodesic node SVG engine
+        │   ├── AgentDirectory.jsx
+        │   ├── HireModal.jsx
+        │   ├── ActiveSessionsDrawer.jsx
+        │   ├── PancakeSwapPanel.jsx
+        │   └── TermiXReport.jsx
         └── utils/
-            └── web3.js                 # Ethers.js provider & contract ABIs
+            └── web3.js
 ```
 
 ---
 
-## 📝 License
+## 📝 License & Hackathon Credits
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
-
----
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 <div align="center">
   <sub>Built with ❤️ for BNB Smart Chain's Build the Era Hackathon</sub>
