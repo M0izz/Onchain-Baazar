@@ -21,9 +21,16 @@ export default function LandingPage({
 
         <section className="py-12 md:py-[64px] grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center relative z-10">
           <div>
-            <p className="font-plex-mono text-[12px] tracking-[0.08em] text-[#8C6A1E] uppercase mb-4 font-semibold">
-              BNB Smart Chain · ERC-8004 Agent Registry
-            </p>
+            {/* Mascot Emblem Badge */}
+            <div className="inline-flex items-center gap-2.5 p-1.5 pr-4 rounded-full bg-[#F3F0E4] border border-[#8C6A1E]/35 mb-4 shadow-sm">
+              <div className="w-7 h-7 flex items-center justify-center shrink-0">
+                <img src="/bazaar-robot.png" alt="Onchain Bazaar Robot Mascot" className="w-full h-full object-contain" />
+              </div>
+              <span className="font-plex-mono text-[11px] font-bold text-[#8C6A1E] tracking-wider uppercase">
+                BNB Smart Chain · ERC-8004 Agent Registry
+              </span>
+            </div>
+
             <h1 className="font-zilla text-[34px] sm:text-[44px] lg:text-[52px] leading-[1.08] font-bold mb-5 tracking-tight text-[#1B1B18]">
               Hire onchain.<br />Cap the spend.<br />Revoke anytime.
             </h1>
@@ -296,7 +303,10 @@ export default function LandingPage({
 
       {/* Footer CTA */}
       <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
-        <section className="py-20 md:py-24 text-center">
+        <section className="py-20 md:py-24 text-center flex flex-col items-center">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 mb-4 transition-transform hover:scale-105">
+            <img src="/bazaar-robot.png" alt="Onchain Bazaar Robot Mascot" className="w-full h-full object-contain filter drop-shadow-md" />
+          </div>
           <h2 className="font-zilla font-bold text-[28px] sm:text-[42px] mb-4 tracking-tight">
             Enter the bazaar
           </h2>
@@ -313,7 +323,10 @@ export default function LandingPage({
 
         <footer className="border-t border-[#1B1B18]/20 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3.5 text-[13px] text-[#4A4A43]">
-            <span>Onchain Bazaar · Built for BNB Chain's Build the Era hackathon</span>
+            <div className="flex items-center gap-2.5">
+              <img src="/bazaar-robot.png" alt="Bazaar Mascot" className="w-6 h-6 object-contain" />
+              <span>Onchain Bazaar · Built for BNB Chain's Build the Era hackathon</span>
+            </div>
             <div className="flex items-center gap-4">
               <a href="https://testnet.bscscan.com" target="_blank" rel="noreferrer" className="hover:text-[#1B1B18] transition-colors">
                 BscScan Testnet

@@ -210,7 +210,7 @@ export default function HeroSphere({ className = "" }) {
         </g>
 
         {/* 3. 3D Geodesic Wireframe Mesh Lines */}
-        <g stroke="var(--navy, #14213D)" strokeWidth="0.8">
+        <g stroke="var(--navy, #14213D)" strokeWidth="1.2">
           {edges.map((e, idx) => (
             <line
               key={`edge-${idx}`}
@@ -218,7 +218,7 @@ export default function HeroSphere({ className = "" }) {
               y1={e.y1}
               x2={e.x2}
               y2={e.y2}
-              strokeOpacity={e.opacity}
+              strokeOpacity={Math.min(1, parseFloat(e.opacity) * 1.4)}
             />
           ))}
         </g>
@@ -230,9 +230,9 @@ export default function HeroSphere({ className = "" }) {
               key={`node-${n.id}`}
               cx={n.x}
               cy={n.y}
-              r={n.r}
+              r={(n.r * 1.3).toFixed(1)}
               fill="var(--brass, #8C6A1E)"
-              opacity={n.opacity}
+              opacity={Math.min(1, n.opacity * 1.25)}
             />
           ))}
         </g>
@@ -242,7 +242,7 @@ export default function HeroSphere({ className = "" }) {
           d="M 280 160 A 250 250 0 0 0 290 640"
           fill="none"
           stroke="url(#rim-arc-gradient)"
-          strokeWidth="5"
+          strokeWidth="7"
           strokeLinecap="round"
           filter="url(#globe-rim-glow)"
         />
@@ -250,21 +250,21 @@ export default function HeroSphere({ className = "" }) {
           d="M 280 160 A 250 250 0 0 0 290 640"
           fill="none"
           stroke="var(--brass, #8C6A1E)"
-          strokeWidth="2"
+          strokeWidth="3"
           strokeLinecap="round"
-          opacity="0.9"
+          opacity="1.0"
         />
 
         {/* 6. Glowing Limb Edge Node Dots */}
         <g filter="url(#node-point-glow)">
-          {limbNodes.slice(0, 8).map((ln) => (
+          {limbNodes.slice(0, 10).map((ln) => (
             <circle
               key={`limb-node-${ln.id}`}
               cx={ln.x}
               cy={ln.y}
-              r="2.6"
+              r="3.4"
               fill="var(--brass, #8C6A1E)"
-              opacity="0.95"
+              opacity="1.0"
             />
           ))}
         </g>

@@ -24,8 +24,8 @@ export default function Navbar({
           onClick={() => setActiveTab("landing")} 
           className="flex items-center gap-2.5 cursor-pointer group shrink-0"
         >
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-[#B23A2E] flex items-center justify-center font-plex-mono text-[11px] font-bold text-[#B23A2E] -rotate-[8deg] group-hover:scale-105 transition-transform bg-[#F3F0E4] shrink-0">
-            OB
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center p-0.5 group-hover:scale-105 transition-transform shrink-0">
+            <img src="/bazaar-robot.png" alt="Onchain Bazaar Mascot" className="w-full h-full object-contain filter drop-shadow-sm" />
           </div>
           <div className="shrink-0">
             <div className="flex items-center gap-1.5 sm:gap-2">

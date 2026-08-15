@@ -44,8 +44,10 @@ export default function AgentDirectory({
       <div className="relative rounded-[2px] p-6 sm:p-8 mb-10 overflow-hidden border border-[#1B1B18]/30 bg-[#E0DBC9]">
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[2px] bg-[#EAE6D9] border border-[#1B1B18]/20 text-[#8C6A1E] text-xs font-plex-mono font-semibold mb-4">
-              <Sparkles size={14} />
+            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-[2px] bg-[#EAE6D9] border border-[#1B1B18]/25 text-[#8C6A1E] text-xs font-plex-mono font-semibold mb-4 shadow-sm">
+              <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                <img src="/bazaar-robot.png" alt="Bazaar Mascot" className="w-full h-full object-contain" />
+              </div>
               <span>BNB Smart Chain AI Agent Marketplace</span>
             </div>
             <h1 className="font-zilla text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1B1B18] tracking-tight mb-4 leading-tight">

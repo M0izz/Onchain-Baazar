@@ -393,8 +393,9 @@ export default function App() {
       {/* Footer (shown on app views) */}
       {activeTab !== "landing" && (
         <footer className="border-t border-[#1B1B18]/20 py-6 px-4 text-center text-xs text-[#4A4A43] bg-[#E0DBC9] font-plex-mono">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
+          <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <img src="/bazaar-robot.png" alt="Bazaar Mascot" className="w-5 h-5 object-contain" />
               <span className="font-zilla font-bold text-[#1B1B18] text-sm">ONCHAIN.BAZAAR</span>
               <span>— Built for BNB Smart Chain "Build the Era" Hackathon</span>
             </div>
