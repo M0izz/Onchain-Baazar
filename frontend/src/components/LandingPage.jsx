@@ -12,46 +12,9 @@ export default function LandingPage({
   return (
     <div className="bg-[#EAE6D9] text-[#1B1B18] font-plex-sans min-h-screen selection:bg-[#14213D] selection:text-[#EAE6D9]">
       
-      {/* Navigation Header */}
-      <div className="max-w-[1120px] mx-auto px-5 sm:px-8">
-        <nav className="flex items-center justify-between py-[22px] border-b border-[#1B1B18]/20">
-          <div 
-            onClick={onExploreMarketplace}
-            className="flex items-center gap-2.5 font-zilla font-bold text-[21px] tracking-wide cursor-pointer hover:opacity-90 transition-opacity"
-          >
-            <span className="w-[30px] h-[30px] rounded-full border-2 border-[#B23A2E] flex items-center justify-center font-plex-mono text-[10px] font-medium text-[#B23A2E] -rotate-[8deg]">
-              OB
-            </span>
-            <span>Onchain Bazaar</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-8 text-[14px] text-[#4A4A43] font-medium">
-            <button onClick={onExploreMarketplace} className="hover:text-[#1B1B18] transition-colors">
-              Marketplace
-            </button>
-            <a href="#how" className="hover:text-[#1B1B18] transition-colors">
-              How it works
-            </a>
-            <a href="#trust" className="hover:text-[#1B1B18] transition-colors">
-              Trust
-            </a>
-            <a href="#tracks" className="hover:text-[#1B1B18] transition-colors">
-              Tracks
-            </a>
-          </div>
-
-          <button
-            onClick={onConnect}
-            className="font-plex-mono text-[13px] font-medium px-[18px] py-[9px] border border-[#1B1B18] rounded-[2px] bg-[#1B1B18] text-[#EAE6D9] whitespace-nowrap hover:bg-[#14213D] hover:border-[#14213D] transition-colors"
-          >
-            {account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : "Connect wallet"}
-          </button>
-        </nav>
-      </div>
-
       {/* Hero Section */}
-      <div className="max-w-[1120px] mx-auto px-5 sm:px-8">
-        <section className="py-12 md:py-[76px] grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+        <section className="py-12 md:py-[64px] grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
           <div>
             <p className="font-plex-mono text-[12px] tracking-[0.08em] text-[#8C6A1E] uppercase mb-4 font-semibold">
               BNB Smart Chain · ERC-8004 Agent Registry
@@ -160,7 +123,7 @@ export default function LandingPage({
       </div>
 
       {/* Manifest ("How it works") */}
-      <div className="max-w-[1120px] mx-auto px-5 sm:px-8">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
         <section className="py-16 md:py-20" id="how">
           <p className="font-plex-mono text-[12px] tracking-[0.08em] text-[#8C6A1E] uppercase mb-2 font-semibold">
             Manifest
@@ -202,7 +165,7 @@ export default function LandingPage({
 
       {/* The Stalls (Agent Categories) */}
       <div className="bg-[#E0DBC9]">
-        <div className="max-w-[1120px] mx-auto px-5 sm:px-8">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
           <section className="py-16" id="stalls">
             <p className="font-plex-mono text-[12px] tracking-[0.08em] text-[#8C6A1E] uppercase mb-2 font-semibold">
               The stalls
@@ -244,7 +207,7 @@ export default function LandingPage({
       </div>
 
       {/* Trust Grid */}
-      <div className="max-w-[1120px] mx-auto px-5 sm:px-8">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
         <section className="py-16 md:py-20" id="trust">
           <p className="font-plex-mono text-[12px] tracking-[0.08em] text-[#8C6A1E] uppercase mb-2 font-semibold">
             Why it holds up
@@ -295,7 +258,7 @@ export default function LandingPage({
 
       {/* Track Stamps */}
       <div className="bg-[#E0DBC9]">
-        <div className="max-w-[1120px] mx-auto px-5 sm:px-8">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
           <section className="py-16" id="tracks">
             <p className="font-plex-mono text-[12px] tracking-[0.08em] text-[#8C6A1E] uppercase mb-2 font-semibold">
               Built for
@@ -327,7 +290,7 @@ export default function LandingPage({
       </div>
 
       {/* Footer CTA */}
-      <div className="max-w-[1120px] mx-auto px-5 sm:px-8">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
         <section className="py-20 md:py-24 text-center">
           <h2 className="font-zilla font-bold text-[28px] sm:text-[42px] mb-4 tracking-tight">
             Enter the bazaar

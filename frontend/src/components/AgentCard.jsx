@@ -19,59 +19,52 @@ export default function AgentCard({
   const IconComponent = ICON_MAP[agent.icon] || Layers;
 
   return (
-    <div className="glass-panel p-6 flex flex-col justify-between group hover:border-[#F0B90B]/50 transition-all duration-300 relative overflow-hidden">
+    <div className="bg-[#F3F0E4] border border-[#1B1B18]/30 rounded-[2px] p-6 flex flex-col justify-between group hover:border-[#1B1B18] transition-all duration-200 relative overflow-hidden text-[#1B1B18]">
       
-      {/* Top Ambient Glow */}
-      <div 
-        className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-15 pointer-events-none transition-opacity group-hover:opacity-30"
-        style={{ backgroundColor: agent.color || '#F0B90B' }}
-      />
-
       <div>
         {/* Header: Icon, Name, Category & Verified Badge */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
             <div 
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl border border-white/10 shadow-inner bg-[#121826]/80 text-[#F0B90B]"
-              style={{ borderColor: `${agent.color}40`, color: agent.color || '#F0B90B' }}
+              className="w-10 h-10 rounded-full border-2 border-[#1B1B18]/30 flex items-center justify-center bg-[#EAE6D9] text-[#14213D]"
             >
-              <IconComponent size={22} />
+              <IconComponent size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-display text-lg font-bold text-white group-hover:text-[#F0B90B] transition-colors">
+                <h3 className="font-zilla text-lg font-bold text-[#1B1B18] group-hover:text-[#14213D] transition-colors">
                   {agent.name}
                 </h3>
                 {agent.verified && (
-                  <div className="flex items-center gap-1 text-[#0ECB81]" title="ERC-8004 Verified on BSC Testnet">
+                  <div className="flex items-center gap-1 text-[#2F6845]" title="ERC-8004 Verified on BSC Testnet">
                     <ShieldCheck size={16} />
                   </div>
                 )}
               </div>
-              <span className="badge badge-gray text-[10px] mt-1">{agent.category}</span>
+              <span className="badge badge-gold text-[10px] mt-1">{agent.category}</span>
             </div>
           </div>
 
-          <div className="text-right">
+          <div className="text-right font-plex-mono">
             <div className="flex items-center gap-1.5 justify-end">
               <span className="pulse-dot" />
-              <span className="text-xs font-bold text-[#0ECB81]">{agent.uptimePercent}%</span>
+              <span className="text-xs font-bold text-[#2F6845]">{agent.uptimePercent}%</span>
             </div>
-            <span className="text-[10px] text-gray-500 uppercase tracking-wider">Uptime</span>
+            <span className="text-[10px] text-[#4A4A43] uppercase tracking-wider">Uptime</span>
           </div>
         </div>
 
         {/* Contract Address Pill with BscScan Link */}
-        <div className="flex items-center justify-between bg-[#07090E]/60 px-3 py-1.5 rounded-lg border border-white/5 mb-4 text-xs">
-          <div className="flex items-center gap-1.5 text-gray-400">
-            <span className="text-[10px] uppercase tracking-wider text-gray-500">Contract:</span>
-            <span className="mono text-gray-300 font-medium">{formatAddress(agent.contractAddress)}</span>
+        <div className="flex items-center justify-between bg-[#EAE6D9] px-3 py-1.5 rounded-[2px] border border-[#1B1B18]/20 mb-4 text-xs font-plex-mono">
+          <div className="flex items-center gap-1.5 text-[#4A4A43]">
+            <span className="text-[10px] uppercase tracking-wider text-[#8C6A1E]">Contract:</span>
+            <span className="mono text-[#1B1B18] font-medium">{formatAddress(agent.contractAddress)}</span>
           </div>
           <a
             href={formatBscScanAddressLink(agent.contractAddress)}
             target="_blank"
             rel="noreferrer"
-            className="text-gray-400 hover:text-[#F0B90B] flex items-center gap-1 text-[11px] transition-colors"
+            className="text-[#4A4A43] hover:text-[#1B1B18] flex items-center gap-1 text-[11px] transition-colors"
             title="Inspect Bytecode on BscScan"
           >
             <span>BscScan</span>
@@ -80,37 +73,37 @@ export default function AgentCard({
         </div>
 
         {/* Tagline & Description */}
-        <p className="text-xs text-gray-300 font-medium mb-1 line-clamp-1">{agent.tagline}</p>
-        <p className="text-xs text-gray-400 mb-5 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-[#1B1B18] font-semibold mb-1 line-clamp-1 font-plex-sans">{agent.tagline}</p>
+        <p className="text-xs text-[#4A4A43] mb-5 line-clamp-2 leading-relaxed font-plex-sans">
           {agent.description}
         </p>
 
         {/* Key Metrics Grid */}
-        <div className="grid grid-cols-2 gap-2 mb-5 bg-[#0D111A]/80 p-3 rounded-xl border border-white/5">
+        <div className="grid grid-cols-2 gap-2 mb-5 bg-[#EAE6D9] p-3 rounded-[2px] border border-[#1B1B18]/20 font-plex-mono">
           <div>
-            <span className="text-[10px] text-gray-500 uppercase font-semibold block">Success Rate</span>
-            <span className="font-display font-bold text-sm text-[#0ECB81]">{agent.successRate}%</span>
+            <span className="text-[10px] text-[#8C6A1E] uppercase font-semibold block">Success Rate</span>
+            <span className="font-zilla font-bold text-sm text-[#2F6845]">{agent.successRate}%</span>
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 uppercase font-semibold block">Protected Vol</span>
-            <span className="font-display font-bold text-sm text-white">{agent.totalVolumeProtectedBNB} BNB</span>
+            <span className="text-[10px] text-[#8C6A1E] uppercase font-semibold block">Protected Vol</span>
+            <span className="font-zilla font-bold text-sm text-[#1B1B18]">{agent.totalVolumeProtectedBNB} BNB</span>
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 uppercase font-semibold block">Latency</span>
-            <span className="font-display font-bold text-sm text-[#00F0FF]">{agent.avgExecutionLatencyMs}ms</span>
+            <span className="text-[10px] text-[#8C6A1E] uppercase font-semibold block">Latency</span>
+            <span className="font-zilla font-bold text-sm text-[#14213D]">{agent.avgExecutionLatencyMs}ms</span>
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 uppercase font-semibold block">Fee Schedule</span>
-            <span className="font-display font-bold text-xs text-gray-300 truncate block" title={agent.feeSchedule}>
+            <span className="text-[10px] text-[#8C6A1E] uppercase font-semibold block">Fee Schedule</span>
+            <span className="font-zilla font-bold text-xs text-[#1B1B18] truncate block" title={agent.feeSchedule}>
               {agent.feeSchedule}
             </span>
           </div>
         </div>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-5">
+        <div className="flex flex-wrap gap-1.5 mb-5 font-plex-mono">
           {agent.tags.map((tag, i) => (
-            <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-white/5 text-gray-400 font-medium">
+            <span key={i} className="text-[10px] px-2 py-0.5 rounded-[2px] bg-[#E0DBC9] text-[#4A4A43] border border-[#1B1B18]/20 font-medium">
               {tag}
             </span>
           ))}
@@ -118,13 +111,13 @@ export default function AgentCard({
       </div>
 
       {/* Action Buttons */}
-      <div className="space-y-2 pt-2 border-t border-white/5">
+      <div className="space-y-2 pt-2 border-t border-[#1B1B18]/20 font-plex-mono">
         <div className="flex items-center gap-2">
           
           {/* Hire Button */}
           <button
             onClick={() => onHire(agent)}
-            className="btn-primary flex-1 justify-center text-xs py-2.5 font-bold"
+            className="btn-primary flex-1 justify-center text-xs py-2.5 font-semibold"
           >
             <span>Hire via Altana</span>
             <ArrowRight size={14} />
@@ -134,7 +127,7 @@ export default function AgentCard({
           <button
             onClick={() => onCompare(agent)}
             className={`btn-secondary text-xs px-3 py-2.5 ${
-              isCompared ? "border-[#0ECB81] bg-[#0ECB81]/15 text-[#0ECB81]" : ""
+              isCompared ? "border-[#2F6845] bg-[#2F6845]/15 text-[#2F6845]" : ""
             }`}
             title="Add to side-by-side comparison"
           >
@@ -147,7 +140,7 @@ export default function AgentCard({
         {agent.pancakeTrack && onLaunchTerminal && (
           <button
             onClick={onLaunchTerminal}
-            className="w-full py-1.5 px-3 rounded-lg bg-[#F0B90B]/10 hover:bg-[#F0B90B]/20 text-[#F0B90B] border border-[#F0B90B]/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+            className="w-full py-1.5 px-3 rounded-[2px] bg-[#E0DBC9] hover:bg-[#EAE6D9] text-[#1B1B18] border border-[#1B1B18]/30 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
           >
             <Layers size={13} />
             <span>Launch PancakeSwap Terminal</span>

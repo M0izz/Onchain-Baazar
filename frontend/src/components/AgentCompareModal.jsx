@@ -28,40 +28,39 @@ export default function AgentCompareModal({
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content max-w-4xl p-6 relative">
+      <div className="modal-content max-w-4xl p-6 relative bg-[#F3F0E4] border border-[#1B1B18]/30 rounded-[2px] text-[#1B1B18]">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+        <div className="flex items-center justify-between pb-4 border-b border-[#1B1B18]/20 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#F0B90B]/10 text-[#F0B90B] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full border border-[#1B1B18]/30 bg-[#EAE6D9] text-[#14213D] flex items-center justify-center">
               <Sliders size={18} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">Side-by-Side Agent Comparison</h2>
-              <p className="text-xs text-gray-400">Comparing ERC-8004 telemetry & execution parameters on BSC Testnet</p>
+              <h2 className="font-zilla text-xl font-bold text-[#1B1B18]">Side-by-Side Agent Comparison</h2>
+              <p className="text-xs text-[#4A4A43] font-plex-sans">Comparing ERC-8004 telemetry & execution parameters on BSC Testnet</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+            className="w-8 h-8 rounded-[2px] bg-[#E0DBC9] hover:bg-[#EAE6D9] flex items-center justify-center text-[#4A4A43] hover:text-[#1B1B18] border border-[#1B1B18]/20 transition-colors"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Comparison Table */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto font-plex-mono">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="py-4 px-4 text-gray-400 font-semibold w-1/3">Attribute</th>
+              <tr className="border-b border-[#1B1B18]/30">
+                <th className="py-4 px-4 text-[#4A4A43] font-semibold w-1/3">Attribute</th>
                 
                 {/* Agent A Header */}
-                <th className="py-4 px-4 bg-[#121826]/40 rounded-t-xl w-1/3">
+                <th className="py-4 px-4 bg-[#EAE6D9] rounded-t-[2px] w-1/3 border-x border-[#1B1B18]/20">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">{agentA.icon}</span>
-                    <span className="font-bold text-sm text-white">{agentA.name}</span>
+                    <span className="font-zilla font-bold text-base text-[#1B1B18]">{agentA.name}</span>
                   </div>
                   <button
                     onClick={() => { onClose(); onHire(agentA); }}
@@ -73,10 +72,9 @@ export default function AgentCompareModal({
                 </th>
 
                 {/* Agent B Header */}
-                <th className="py-4 px-4 bg-[#121826]/80 rounded-t-xl w-1/3">
+                <th className="py-4 px-4 bg-[#E0DBC9] rounded-t-[2px] w-1/3 border-r border-[#1B1B18]/20">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">{agentB.icon}</span>
-                    <span className="font-bold text-sm text-white">{agentB.name}</span>
+                    <span className="font-zilla font-bold text-base text-[#1B1B18]">{agentB.name}</span>
                   </div>
                   <button
                     onClick={() => { onClose(); onHire(agentB); }}
@@ -89,28 +87,28 @@ export default function AgentCompareModal({
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#1B1B18]/15">
               {comparisonAttributes.map((attr, index) => {
                 const valA = attr.getVal(agentA);
                 const valB = attr.getVal(agentB);
 
                 return (
-                  <tr key={index} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="py-3 px-4 text-gray-400 font-medium">{attr.label}</td>
+                  <tr key={index} className="hover:bg-black/5 transition-colors">
+                    <td className="py-3 px-4 text-[#4A4A43] font-medium">{attr.label}</td>
                     
                     {/* Val A */}
-                    <td className={`py-3 px-4 bg-[#121826]/20 ${attr.highlight ? "font-bold text-[#0ECB81]" : "text-gray-200"}`}>
+                    <td className={`py-3 px-4 bg-[#EAE6D9]/70 border-x border-[#1B1B18]/10 ${attr.highlight ? "font-bold text-[#2F6845]" : "text-[#1B1B18]"}`}>
                       {attr.isLink ? (
                         <a
                           href={formatBscScanAddressLink(agentA.contractAddress)}
                           target="_blank"
                           rel="noreferrer"
-                          className="mono text-[#F0B90B] hover:underline"
+                          className="mono text-[#14213D] hover:underline"
                         >
                           {valA}
                         </a>
                       ) : attr.isBool ? (
-                        <span className="inline-flex items-center gap-1 text-[#0ECB81] font-semibold">
+                        <span className="inline-flex items-center gap-1 text-[#2F6845] font-semibold">
                           <Check size={14} /> {valA}
                         </span>
                       ) : (
@@ -119,18 +117,18 @@ export default function AgentCompareModal({
                     </td>
 
                     {/* Val B */}
-                    <td className={`py-3 px-4 bg-[#121826]/40 ${attr.highlight ? "font-bold text-[#0ECB81]" : "text-gray-200"}`}>
+                    <td className={`py-3 px-4 bg-[#E0DBC9]/70 border-r border-[#1B1B18]/10 ${attr.highlight ? "font-bold text-[#2F6845]" : "text-[#1B1B18]"}`}>
                       {attr.isLink ? (
                         <a
                           href={formatBscScanAddressLink(agentB.contractAddress)}
                           target="_blank"
                           rel="noreferrer"
-                          className="mono text-[#F0B90B] hover:underline"
+                          className="mono text-[#14213D] hover:underline"
                         >
                           {valB}
                         </a>
                       ) : attr.isBool ? (
-                        <span className="inline-flex items-center gap-1 text-[#0ECB81] font-semibold">
+                        <span className="inline-flex items-center gap-1 text-[#2F6845] font-semibold">
                           <Check size={14} /> {valB}
                         </span>
                       ) : (
@@ -145,9 +143,9 @@ export default function AgentCompareModal({
         </div>
 
         {/* Footer Note */}
-        <div className="mt-6 p-3 rounded-xl bg-[#0D111A] border border-white/5 flex items-center justify-between text-xs text-gray-400">
+        <div className="mt-6 p-3 rounded-[2px] bg-[#EAE6D9] border border-[#1B1B18]/20 flex items-center justify-between text-xs text-[#4A4A43] font-plex-mono">
           <span>All metrics indexed from BSC Testnet (Chain ID: 97) via Altana session logs.</span>
-          <button onClick={onClose} className="text-gray-400 hover:text-white font-semibold">
+          <button onClick={onClose} className="text-[#1B1B18] hover:underline font-semibold">
             Close
           </button>
         </div>

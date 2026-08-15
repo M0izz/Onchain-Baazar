@@ -60,29 +60,28 @@ export default function HireModal({
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content max-w-lg p-6 relative">
+      <div className="modal-content max-w-lg p-6 relative bg-[#F3F0E4] border border-[#1B1B18]/30 rounded-[2px] text-[#1B1B18]">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+        <div className="flex items-center justify-between pb-4 border-b border-[#1B1B18]/20 mb-6">
           <div className="flex items-center gap-3">
             <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-[#121826] border border-white/10"
-              style={{ color: agent.color }}
+              className="w-10 h-10 rounded-full border border-[#1B1B18]/30 flex items-center justify-center bg-[#EAE6D9] text-[#14213D]"
             >
-              {agent.icon}
+              <ShieldCheck size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-white">Hire {agent.name}</h2>
+                <h2 className="font-zilla text-xl font-bold text-[#1B1B18]">Hire {agent.name}</h2>
                 <span className="badge badge-emerald text-[10px]">Altana Protected</span>
               </div>
-              <p className="text-xs text-gray-400">Cryptographically spend-capped agent session</p>
+              <p className="text-xs text-[#4A4A43] font-plex-sans">Cryptographically spend-capped agent session</p>
             </div>
           </div>
 
           <button
             onClick={resetModal}
-            className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white"
+            className="w-8 h-8 rounded-[2px] bg-[#E0DBC9] hover:bg-[#EAE6D9] flex items-center justify-center text-[#4A4A43] hover:text-[#1B1B18] border border-[#1B1B18]/20"
           >
             <X size={16} />
           </button>
@@ -90,13 +89,13 @@ export default function HireModal({
 
         {/* Step 1: Configuration Form */}
         {step === 1 && (
-          <div className="space-y-6">
+          <div className="space-y-6 font-plex-mono">
             
             {/* Safety Guarantee Notice */}
-            <div className="p-3.5 rounded-xl bg-[#0ECB81]/10 border border-[#0ECB81]/30 flex items-start gap-3">
-              <ShieldCheck className="text-[#0ECB81] shrink-0 mt-0.5" size={18} />
-              <div className="text-xs text-gray-300 leading-relaxed">
-                <strong className="text-white font-semibold block mb-0.5">Altana Non-Custodial Guarantee</strong>
+            <div className="p-3.5 rounded-[2px] bg-[#E0DBC9] border border-[#1B1B18]/30 flex items-start gap-3">
+              <ShieldCheck className="text-[#2F6845] shrink-0 mt-0.5" size={18} />
+              <div className="text-xs text-[#4A4A43] leading-relaxed font-plex-sans">
+                <strong className="text-[#1B1B18] font-bold block mb-0.5">Altana Non-Custodial Guarantee</strong>
                 The agent cannot exceed your spend cap or execute outside whitelist permissions. You retain 1-click emergency revocation at all times.
               </div>
             </div>
@@ -104,11 +103,11 @@ export default function HireModal({
             {/* Spend Cap Setting */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
-                  <DollarSign size={14} className="text-[#F0B90B]" />
+                <label className="text-xs font-bold uppercase tracking-wider text-[#8C6A1E] flex items-center gap-1.5">
+                  <DollarSign size={14} className="text-[#8C6A1E]" />
                   <span>Maximum Spend Cap (tBNB)</span>
                 </label>
-                <span className="text-xs text-gray-400">Hard onchain ceiling</span>
+                <span className="text-xs text-[#4A4A43]">Hard onchain ceiling</span>
               </div>
 
               <div className="grid grid-cols-4 gap-2 mb-2">
@@ -117,10 +116,10 @@ export default function HireModal({
                     key={preset}
                     type="button"
                     onClick={() => setSpendCap(preset)}
-                    className={`py-2 rounded-xl text-xs font-bold transition-all ${
+                    className={`py-2 rounded-[2px] text-xs font-bold transition-all ${
                       spendCap === preset
-                        ? "bg-[#F0B90B] text-black shadow-md shadow-[#F0B90B]/20"
-                        : "bg-[#121826] text-gray-300 border border-white/10 hover:border-white/20"
+                        ? "bg-[#14213D] text-[#EAE6D9] shadow-sm"
+                        : "bg-[#EAE6D9] text-[#1B1B18] border border-[#1B1B18]/30 hover:bg-[#E0DBC9]"
                     }`}
                   >
                     {preset} tBNB
@@ -135,10 +134,10 @@ export default function HireModal({
                   min="0.001"
                   value={spendCap}
                   onChange={(e) => setSpendCap(e.target.value)}
-                  className="w-full bg-[#121826] border border-white/10 rounded-xl px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-[#F0B90B]"
+                  className="w-full bg-[#EAE6D9] border border-[#1B1B18]/30 rounded-[2px] px-3 py-2 text-sm text-[#1B1B18] font-mono focus:outline-none focus:border-[#14213D]"
                   placeholder="Custom spend cap in tBNB"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-bold">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8C6A1E] font-bold">
                   tBNB
                 </span>
               </div>
@@ -147,11 +146,11 @@ export default function HireModal({
             {/* Session Expiry Duration */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
-                  <Clock size={14} className="text-[#00F0FF]" />
+                <label className="text-xs font-bold uppercase tracking-wider text-[#8C6A1E] flex items-center gap-1.5">
+                  <Clock size={14} className="text-[#14213D]" />
                   <span>Session Duration</span>
                 </label>
-                <span className="text-xs text-gray-400">Auto-expires after time</span>
+                <span className="text-xs text-[#4A4A43]">Auto-expires after time</span>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
@@ -160,10 +159,10 @@ export default function HireModal({
                     key={d.value}
                     type="button"
                     onClick={() => setDurationHours(d.value)}
-                    className={`py-2 rounded-xl text-xs font-bold transition-all ${
+                    className={`py-2 rounded-[2px] text-xs font-bold transition-all ${
                       durationHours === d.value
-                        ? "bg-[#00F0FF] text-black shadow-md shadow-[#00F0FF]/20"
-                        : "bg-[#121826] text-gray-300 border border-white/10 hover:border-white/20"
+                        ? "bg-[#14213D] text-[#EAE6D9] shadow-sm"
+                        : "bg-[#EAE6D9] text-[#1B1B18] border border-[#1B1B18]/30 hover:bg-[#E0DBC9]"
                     }`}
                   >
                     {d.label}
@@ -173,23 +172,23 @@ export default function HireModal({
             </div>
 
             {/* Target Contract Whitelist summary */}
-            <div className="bg-[#07090E]/80 p-3 rounded-xl border border-white/5 text-xs space-y-1.5">
-              <div className="flex items-center justify-between text-gray-400">
+            <div className="bg-[#EAE6D9] p-3 rounded-[2px] border border-[#1B1B18]/20 text-xs space-y-1.5 font-plex-mono">
+              <div className="flex items-center justify-between text-[#4A4A43]">
                 <span>Agent Contract:</span>
-                <span className="mono text-white font-medium">{formatAddress(agent.contractAddress)}</span>
+                <span className="mono text-[#1B1B18] font-medium">{formatAddress(agent.contractAddress)}</span>
               </div>
-              <div className="flex items-center justify-between text-gray-400">
+              <div className="flex items-center justify-between text-[#4A4A43]">
                 <span>Session Policy:</span>
-                <span className="text-[#0ECB81] font-semibold">Strict Spend Cap + Nonce Check</span>
+                <span className="text-[#2F6845] font-semibold">Strict Spend Cap + Nonce Check</span>
               </div>
-              <div className="flex items-center justify-between text-gray-400">
+              <div className="flex items-center justify-between text-[#4A4A43]">
                 <span>Network:</span>
-                <span className="text-white">BNB Smart Chain Testnet (97)</span>
+                <span className="text-[#1B1B18]">BNB Smart Chain Testnet (97)</span>
               </div>
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-[2px] bg-[#B23A2E]/10 border border-[#B23A2E]/40 text-[#B23A2E] text-xs flex items-center gap-2 font-plex-mono">
                 <AlertTriangle size={16} className="shrink-0" />
                 <span>{error}</span>
               </div>
@@ -199,7 +198,7 @@ export default function HireModal({
             <button
               onClick={handleHireSubmit}
               disabled={isSubmitting || !spendCap || parseFloat(spendCap) <= 0}
-              className="btn-primary w-full justify-center py-3 text-sm font-bold shadow-gold disabled:opacity-50"
+              className="btn-primary w-full justify-center py-3 text-sm font-semibold disabled:opacity-50"
             >
               <span>Authorize Altana Session & Sign</span>
               <ArrowRight size={16} />
@@ -210,12 +209,12 @@ export default function HireModal({
 
         {/* Step 2: Signing / In Progress */}
         {step === 2 && (
-          <div className="py-12 text-center space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30 flex items-center justify-center mx-auto animate-spin">
-              <Key size={28} />
+          <div className="py-12 text-center space-y-4 font-plex-mono">
+            <div className="w-14 h-14 rounded-full bg-[#14213D] text-[#EAE6D9] flex items-center justify-center mx-auto animate-spin">
+              <Key size={26} />
             </div>
-            <h3 className="text-lg font-bold text-white">Signing Altana Session Key</h3>
-            <p className="text-xs text-gray-400 max-w-sm mx-auto">
+            <h3 className="font-zilla text-xl font-bold text-[#1B1B18]">Signing Altana Session Key</h3>
+            <p className="text-xs text-[#4A4A43] max-w-sm mx-auto font-plex-sans">
               Please confirm the transaction in your connected wallet to register the spend cap and expiry on BSC Testnet.
             </p>
           </div>
@@ -223,34 +222,34 @@ export default function HireModal({
 
         {/* Step 3: Success Confirmation */}
         {step === 3 && txReceipt && (
-          <div className="space-y-6 py-4">
+          <div className="space-y-6 py-4 font-plex-mono">
             <div className="text-center space-y-2">
-              <div className="w-14 h-14 rounded-full bg-[#0ECB81]/15 text-[#0ECB81] border border-[#0ECB81]/30 flex items-center justify-center mx-auto">
+              <div className="w-14 h-14 rounded-full border-2 border-[#2F6845] text-[#2F6845] bg-[#EAE6D9] flex items-center justify-center mx-auto">
                 <CheckCircle2 size={32} />
               </div>
-              <h3 className="text-xl font-bold text-white">Session Activated!</h3>
-              <p className="text-xs text-gray-300 max-w-sm mx-auto">
+              <h3 className="font-zilla text-2xl font-bold text-[#1B1B18]">Session Activated!</h3>
+              <p className="text-xs text-[#4A4A43] max-w-sm mx-auto font-plex-sans">
                 {agent.name} is now authorized to execute tasks up to <strong>{spendCap} tBNB</strong> over the next <strong>{durationHours} hours</strong>.
               </p>
             </div>
 
             {/* Tx Details Card */}
-            <div className="bg-[#07090E] p-4 rounded-2xl border border-white/10 space-y-2 text-xs">
-              <div className="flex items-center justify-between text-gray-400">
+            <div className="bg-[#EAE6D9] p-4 rounded-[2px] border border-[#1B1B18]/30 space-y-2 text-xs">
+              <div className="flex items-center justify-between text-[#4A4A43]">
                 <span>Session ID:</span>
-                <span className="mono text-white">{formatAddress(txReceipt.session?.sessionId || "0x9f4a...b321")}</span>
+                <span className="mono text-[#1B1B18]">{formatAddress(txReceipt.session?.sessionId || "0x9f4a...b321")}</span>
               </div>
-              <div className="flex items-center justify-between text-gray-400">
+              <div className="flex items-center justify-between text-[#4A4A43]">
                 <span>Spend Cap:</span>
-                <span className="font-bold text-[#F0B90B]">{spendCap} tBNB</span>
+                <span className="font-bold text-[#8C6A1E]">{spendCap} tBNB</span>
               </div>
-              <div className="flex items-center justify-between text-gray-400">
+              <div className="flex items-center justify-between text-[#4A4A43]">
                 <span>Transaction Hash:</span>
                 <a
                   href={formatBscScanTxLink(txReceipt.session?.txHash || "0xabc")}
                   target="_blank"
                   rel="noreferrer"
-                  className="mono text-[#00F0FF] hover:underline flex items-center gap-1"
+                  className="mono text-[#14213D] hover:underline flex items-center gap-1"
                 >
                   <span>{formatAddress(txReceipt.session?.txHash || "0x1234567890abcdef")}</span>
                   <ExternalLink size={12} />
@@ -260,7 +259,7 @@ export default function HireModal({
 
             <button
               onClick={resetModal}
-              className="btn-primary w-full justify-center py-2.5 text-xs font-bold"
+              className="btn-primary w-full justify-center py-2.5 text-xs font-semibold"
             >
               View in Active Sessions Drawer
             </button>

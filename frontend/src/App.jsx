@@ -297,7 +297,7 @@ export default function App() {
   const activeSessionsOnly = userSessions.filter((s) => s.status === "active");
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#07090E] text-white">
+    <div className="min-h-screen flex flex-col bg-[#EAE6D9] text-[#1B1B18]">
       
       {/* Top Navbar */}
       <Navbar
@@ -392,20 +392,20 @@ export default function App() {
 
       {/* Footer (shown on app views) */}
       {activeTab !== "landing" && (
-        <footer className="border-t border-white/10 py-6 px-4 text-center text-xs text-gray-500 bg-[#07090E]">
+        <footer className="border-t border-[#1B1B18]/20 py-6 px-4 text-center text-xs text-[#4A4A43] bg-[#E0DBC9] font-plex-mono">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="font-display font-bold text-white">ONCHAIN.BAZAAR</span>
+              <span className="font-zilla font-bold text-[#1B1B18] text-sm">ONCHAIN.BAZAAR</span>
               <span>— Built for BNB Smart Chain "Build the Era" Hackathon</span>
             </div>
             <div className="flex items-center gap-4">
-              <a href="https://testnet.bscscan.com" target="_blank" rel="noreferrer" className="hover:text-[#F0B90B]">
+              <a href="https://testnet.bscscan.com" target="_blank" rel="noreferrer" className="hover:text-[#1B1B18] underline">
                 BscScan Testnet
               </a>
-              <a href="https://developer.pancakeswap.finance" target="_blank" rel="noreferrer" className="hover:text-[#F0B90B]">
+              <a href="https://developer.pancakeswap.finance" target="_blank" rel="noreferrer" className="hover:text-[#1B1B18] underline">
                 PancakeSwap Docs
               </a>
-              <span className="text-gray-600">Chain ID: 97</span>
+              <span className="text-[#8C6A1E]">Chain ID: 97</span>
             </div>
           </div>
         </footer>
