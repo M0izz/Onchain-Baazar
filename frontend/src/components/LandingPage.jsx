@@ -1,4 +1,5 @@
 import React from "react";
+import HeroSphere from "./HeroSphere";
 import { AGENTS_DATA } from "../data/agents";
 
 export default function LandingPage({
@@ -10,11 +11,15 @@ export default function LandingPage({
   onSelectAgentForHire
 }) {
   return (
-    <div className="bg-[#EAE6D9] text-[#1B1B18] font-plex-sans min-h-screen selection:bg-[#14213D] selection:text-[#EAE6D9]">
-      
+    <div className="bg-[#EAE6D9] text-[#1B1B18] font-plex-sans min-h-screen selection:bg-[#14213D] selection:text-[#EAE6D9] relative overflow-hidden">
+
       {/* Hero Section */}
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
-        <section className="py-12 md:py-[64px] grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 relative">
+        
+        {/* Geodesic Node Wireframe Globe (Adapts current app colors with NO orange) */}
+        <HeroSphere />
+
+        <section className="py-12 md:py-[64px] grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center relative z-10">
           <div>
             <p className="font-plex-mono text-[12px] tracking-[0.08em] text-[#8C6A1E] uppercase mb-4 font-semibold">
               BNB Smart Chain · ERC-8004 Agent Registry
@@ -42,21 +47,21 @@ export default function LandingPage({
           </div>
 
           {/* Ticket Visual */}
-          <div className="flex justify-center">
-            <div className="relative bg-[#F3F0E4] border border-[#1B1B18]/30 w-full max-w-[380px] p-[26px_24px_22px] rotate-[1.2deg] shadow-[0_2px_12px_rgba(27,27,24,0.08)]">
+          <div className="flex justify-center relative z-10">
+            <div className="relative bg-[#F3F0E4]/95 backdrop-blur-md border border-[#1B1B18]/30 w-full max-w-[380px] p-[26px_24px_22px] rotate-[1.2deg] shadow-[0_16px_40px_rgba(20,33,61,0.14),0_2px_12px_rgba(27,27,24,0.08)]">
               {/* Notch circles */}
               <div className="absolute top-1/2 -left-[11px] -translate-y-1/2 w-[22px] h-[22px] rounded-full bg-[#EAE6D9]" />
               <div className="absolute top-1/2 -right-[11px] -translate-y-1/2 w-[22px] h-[22px] rounded-full bg-[#EAE6D9]" />
-              
+
               <div className="flex justify-between font-plex-mono text-[11.5px] text-[#4A4A43] mb-3">
                 <span>HIRE RECEIPT</span>
                 <span>No. 00482</span>
               </div>
               <div className="font-zilla font-semibold text-[19px] mb-1">SyrupSentinel v3</div>
               <div className="font-plex-mono text-[11px] text-[#4A4A43] mb-5">yield optimizer · PancakeSwap v3 LP</div>
-              
+
               <div className="border-t-[1.5px] border-dashed border-[#1B1B18]/30 my-4" />
-              
+
               <div className="grid grid-cols-2 gap-y-3.5 gap-x-2.5 mb-4">
                 <div>
                   <div className="font-plex-mono text-[10px] uppercase tracking-[0.05em] text-[#8C6A1E] mb-1">Spend cap</div>
@@ -179,8 +184,8 @@ export default function LandingPage({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#1B1B18]/30 border border-[#1B1B18]/30">
               {AGENTS_DATA.map((agent) => (
-                <div 
-                  key={agent.id} 
+                <div
+                  key={agent.id}
                   className="bg-[#EAE6D9] p-6 flex flex-col justify-between hover:bg-[#F3F0E4] transition-colors cursor-pointer group"
                   onClick={() => onSelectAgentForHire ? onSelectAgentForHire(agent) : onExploreMarketplace()}
                 >
