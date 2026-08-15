@@ -2,7 +2,7 @@
 
   <img src="frontend/public/bazaar-robot.png" alt="Onchain Bazaar Logo" width="160" />
 
-  # Onchain Bazaar AI
+  # Onchain Bazaar 
 
   > *"Hire Onchain. Cap the Spend. Revoke Anytime."*
 
