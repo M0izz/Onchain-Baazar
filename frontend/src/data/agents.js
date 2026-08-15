@@ -21,7 +21,7 @@ export const AGENTS_DATA = [
     altanaCompatible: true,
     pancakeTrack: true,
     tags: ["PancakeSwap v3", "Concentrated LP", "Slippage Guard", "Altana Session"],
-    icon: "🥞",
+    icon: "Layers",
     color: "#F0B90B",
     stats: {
       aprBoost: "+18.7%",
@@ -56,7 +56,7 @@ export const AGENTS_DATA = [
     altanaCompatible: true,
     pancakeTrack: false,
     tags: ["Venus Protocol", "Liquidation Guard", "Health Factor", "Altana Session"],
-    icon: "🛡️",
+    icon: "ShieldCheck",
     color: "#0ECB81",
     stats: {
       liquidationsAverted: 29,
@@ -91,7 +91,7 @@ export const AGENTS_DATA = [
     altanaCompatible: true,
     pancakeTrack: false,
     tags: ["Auto-Compound", "Multi-Pool", "Batch Gas Saver", "Altana Session"],
-    icon: "🌾",
+    icon: "TrendingUp",
     color: "#00F0FF",
     stats: {
       apyUplift: "+3.4%",
@@ -126,7 +126,7 @@ export const AGENTS_DATA = [
     altanaCompatible: true,
     pancakeTrack: false,
     tags: ["Exploit Detector", "Emergency Halt", "Anomaly Feed", "Altana Session"],
-    icon: "👁️",
+    icon: "Eye",
     color: "#A855F7",
     stats: {
       anomaliesCaught: 14,

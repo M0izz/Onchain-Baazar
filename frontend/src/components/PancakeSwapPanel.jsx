@@ -54,8 +54,10 @@ export default function PancakeSwapPanel({
       {/* Title Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">🥞</span>
+          <div className="flex items-center gap-2.5 mb-1">
+            <div className="w-8 h-8 rounded-lg bg-[#F0B90B]/15 text-[#F0B90B] flex items-center justify-center border border-[#F0B90B]/30">
+              <Layers size={18} />
+            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
               PancakeSwap LP Automation Terminal
             </h1>

@@ -1,6 +1,13 @@
 import React from "react";
-import { ShieldCheck, ExternalLink, ArrowRight, Activity, Clock, Zap, CheckCircle2, Sliders } from "lucide-react";
+import { ShieldCheck, ExternalLink, ArrowRight, Layers, TrendingUp, Eye, Sliders } from "lucide-react";
 import { formatAddress, formatBscScanAddressLink } from "../utils/web3";
+
+const ICON_MAP = {
+  Layers: Layers,
+  ShieldCheck: ShieldCheck,
+  TrendingUp: TrendingUp,
+  Eye: Eye,
+};
 
 export default function AgentCard({
   agent,
@@ -9,6 +16,8 @@ export default function AgentCard({
   isCompared,
   onLaunchTerminal
 }) {
+  const IconComponent = ICON_MAP[agent.icon] || Layers;
+
   return (
     <div className="glass-panel p-6 flex flex-col justify-between group hover:border-[#F0B90B]/50 transition-all duration-300 relative overflow-hidden">
       
@@ -23,10 +32,10 @@ export default function AgentCard({
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
             <div 
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl border border-white/10 shadow-inner bg-[#121826]/80"
-              style={{ borderColor: `${agent.color}40` }}
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl border border-white/10 shadow-inner bg-[#121826]/80 text-[#F0B90B]"
+              style={{ borderColor: `${agent.color}40`, color: agent.color || '#F0B90B' }}
             >
-              {agent.icon}
+              <IconComponent size={22} />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -140,7 +149,8 @@ export default function AgentCard({
             onClick={onLaunchTerminal}
             className="w-full py-1.5 px-3 rounded-lg bg-[#F0B90B]/10 hover:bg-[#F0B90B]/20 text-[#F0B90B] border border-[#F0B90B]/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
           >
-            <span>🥞 Launch PancakeSwap Terminal</span>
+            <Layers size={13} />
+            <span>Launch PancakeSwap Terminal</span>
           </button>
         )}
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Navbar from "./components/Navbar";
+import LandingPage from "./components/LandingPage";
 import AgentDirectory from "./components/AgentDirectory";
 import AgentCompareModal from "./components/AgentCompareModal";
 import HireModal from "./components/HireModal";
@@ -23,7 +24,7 @@ export default function App() {
   // State
   const [account, setAccount] = useState(null);
   const [isCorrectNetwork, setIsCorrectNetwork] = useState(true);
-  const [activeTab, setActiveTab] = useState("marketplace"); // 'marketplace' | 'pancakeswap' | 'termix'
+  const [activeTab, setActiveTab] = useState("landing"); // 'landing' | 'marketplace' | 'pancakeswap' | 'termix'
   const [isDevMode, setIsDevMode] = useState(false);
 
   // Data State
@@ -315,6 +316,22 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1">
+        {activeTab === "landing" && (
+          <LandingPage
+            onExploreMarketplace={() => setActiveTab("marketplace")}
+            onLaunchPancakeTerminal={() => setActiveTab("pancakeswap")}
+            onViewTermiX={() => setActiveTab("termix")}
+            account={account}
+            onConnect={connectWallet}
+            onSelectAgentForHire={(agent) => {
+              if (!account) {
+                connectWallet();
+              }
+              setSelectedAgentForHire(agent);
+            }}
+          />
+        )}
+
         {activeTab === "marketplace" && (
           <AgentDirectory
             agents={agents}
@@ -373,24 +390,26 @@ export default function App() {
         onRefresh={() => account && fetchUserSessions(account)}
       />
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-6 px-4 text-center text-xs text-gray-500 bg-[#07090E]">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-display font-bold text-white">ONCHAIN.BAZAAR</span>
-            <span>— Built for BNB Smart Chain "Build the Era" Hackathon</span>
+      {/* Footer (shown on app views) */}
+      {activeTab !== "landing" && (
+        <footer className="border-t border-white/10 py-6 px-4 text-center text-xs text-gray-500 bg-[#07090E]">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="font-display font-bold text-white">ONCHAIN.BAZAAR</span>
+              <span>— Built for BNB Smart Chain "Build the Era" Hackathon</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <a href="https://testnet.bscscan.com" target="_blank" rel="noreferrer" className="hover:text-[#F0B90B]">
+                BscScan Testnet
+              </a>
+              <a href="https://developer.pancakeswap.finance" target="_blank" rel="noreferrer" className="hover:text-[#F0B90B]">
+                PancakeSwap Docs
+              </a>
+              <span className="text-gray-600">Chain ID: 97</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="https://testnet.bscscan.com" target="_blank" rel="noreferrer" className="hover:text-[#F0B90B]">
-              BscScan Testnet
-            </a>
-            <a href="https://developer.pancakeswap.finance" target="_blank" rel="noreferrer" className="hover:text-[#F0B90B]">
-              PancakeSwap Docs
-            </a>
-            <span className="text-gray-600">Chain ID: 97</span>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
 
     </div>
   );

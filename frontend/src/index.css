@@ -39,6 +39,43 @@
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
+
+  /* Landing Page Theme Variables */
+  --paper: #EAE6D9;
+  --paper-alt: #E0DBC9;
+  --ink: #1B1B18;
+  --ink-soft: #4A4A43;
+  --navy: #14213D;
+  --stamp: #B23A2E;
+  --brass: #8C6A1E;
+  --verified: #2F6845;
+  --line: rgba(27, 27, 24, 0.18);
+  --line-strong: rgba(27, 27, 24, 0.32);
+}
+
+.font-zilla {
+  font-family: 'Zilla Slab', serif;
+}
+.font-plex-sans {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.font-plex-mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 34s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll-left {
+    animation: none;
+  }
 }
 
 * {

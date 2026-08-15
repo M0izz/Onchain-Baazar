@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldCheck, Zap, Activity, ExternalLink, SlidersHorizontal, BarChart3, Radio, RefreshCw } from "lucide-react";
+import { ShieldCheck, Zap, Layers, BarChart3, ExternalLink, Home } from "lucide-react";
 import { formatAddress, BSCSCAN_TESTNET_URL } from "../utils/web3";
 
 export default function Navbar({
@@ -22,12 +22,12 @@ export default function Navbar({
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-6">
           <div 
-            onClick={() => setActiveTab("marketplace")} 
+            onClick={() => setActiveTab("landing")} 
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#F0B90B] to-[#FCD535] p-0.5 shadow-lg shadow-[#F0B90B]/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#0B0E14] rounded-[10px] flex items-center justify-center">
-                <span className="text-xl">⚡</span>
+              <div className="w-full h-full bg-[#0B0E14] rounded-[10px] flex items-center justify-center font-mono font-bold text-[#F0B90B] text-sm">
+                OB
               </div>
             </div>
             <div>
@@ -43,6 +43,17 @@ export default function Navbar({
 
           {/* Navigation Tabs */}
           <nav className="hidden md:flex items-center gap-1 bg-[#121826]/70 p-1 rounded-xl border border-white/5">
+            <button
+              onClick={() => setActiveTab("landing")}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
+                activeTab === "landing"
+                  ? "bg-[#F0B90B] text-black shadow-md shadow-[#F0B90B]/20"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Home size={14} /> Overview
+            </button>
+
             <button
               onClick={() => setActiveTab("marketplace")}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
@@ -62,7 +73,7 @@ export default function Navbar({
                   : "text-gray-400 hover:text-white hover:bg-white/5"
               }`}
             >
-              🥞 PancakeSwap Terminal
+              <Layers size={14} /> PancakeSwap Terminal
             </button>
 
             <button
