@@ -4,20 +4,33 @@ import uuid
 import asyncio
 import logging
 from contextlib import asynccontextmanager
-
-from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, field_validator
+from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 
+from fastapi import FastAPI, HTTPException, Query, Depends, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, field_validator
+from sqlalchemy import select, update
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from config import settings
+from database import AltanaSession, Base, User, engine, get_db
+from auth import (
+    authenticate_user,
+    complete_password_reset,
+    create_access_token,
+    create_refresh_token,
+    get_current_admin,
+    get_current_user,
+    register_user,
+    request_password_reset,
+    rotate_refresh_token,
+)
 from indexer import (
     REFERENCE_AGENTS,
     TERMIX_ADVANTAGE_MATRIX,
-    session_ledger,
     fetch_bscscan_tx_status,
     fetch_bscscan_address_txcount,
-    fetch_sessions_for_user,
     get_live_protocol_stats,
     poll_onchain_events,
     get_w3,
@@ -27,11 +40,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname
 logger = logging.getLogger("main")
 
 
-# ─── Lifespan: Start background event poller ──────────────────────────────────
+# ─── Lifespan ─────────────────────────────────────────────────────────────────
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Starting Onchain Bazaar Indexer — V2")
-    # Launch background RPC event poller
+    # Create all DB tables (Alembic handles migrations in prod; this covers local dev)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Starting Onchain Bazaar Indexer — V2 (with auth + DB)")
     task = asyncio.create_task(poll_onchain_events())
     yield
     task.cancel()
@@ -41,30 +57,80 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Onchain Bazaar Indexer API — V2",
     description=(
-        "Backend indexing, BscScan caching, and live onchain session tracking "
-        "for ERC-8004 AI agents on BNB Smart Chain."
+        "Backend indexing, BscScan caching, live onchain session tracking, "
+        "and user account management for ERC-8004 AI agents on BNB Smart Chain."
     ),
-    version="2.0.0",
+    version="2.1.0",
     lifespan=lifespan,
 )
 
+# Restrict origins to the deployed frontend in production
+_allowed_origins = [
+    "http://localhost:5173",
+    "http://localhost:4173",
+]
+if settings.FRONTEND_URL:
+    _allowed_origins.append(settings.FRONTEND_URL)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# ─── Request / Response Models & Security Validation ─────────────────────────
+# ─── Request / Response Models ────────────────────────────────────────────────
+
 ETH_ADDR_REGEX = re.compile(r"^0x[a-fA-F0-9]{40}$")
+
+
+class RegisterRequest(BaseModel):
+    email: str = Field(..., min_length=5, max_length=255)
+    password: str = Field(..., min_length=8, max_length=128)
+    display_name: Optional[str] = Field(None, max_length=100)
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
+class LogoutRequest(BaseModel):
+    refresh_token: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(..., min_length=8, max_length=128)
+
+
+class UpdateProfileRequest(BaseModel):
+    display_name: Optional[str] = Field(None, max_length=100)
+    wallet_address: Optional[str] = Field(None, max_length=42)
+
+    @field_validator("wallet_address")
+    @classmethod
+    def validate_wallet(cls, v):
+        if v and not ETH_ADDR_REGEX.match(v):
+            raise ValueError("Invalid EVM wallet address format")
+        return v
+
 
 class SessionCreateRequest(BaseModel):
     userAddress: str
     agentId: str
-    spendCapBNB: float = Field(gt=0, le=100.0, description="Spend cap must be between 0 and 100 tBNB")
-    durationHours: int = Field(gt=0, le=720, description="Duration must be between 1 and 720 hours")
+    spendCapBNB: float = Field(gt=0, le=100.0)
+    durationHours: int = Field(gt=0, le=720)
     permissionsHash: Optional[str] = "0x" + "0" * 64
     txHash: Optional[str] = None
 
@@ -74,6 +140,7 @@ class SessionCreateRequest(BaseModel):
         if not ETH_ADDR_REGEX.match(v):
             raise ValueError("Invalid EVM user address format")
         return v
+
 
 class SessionRevokeRequest(BaseModel):
     sessionId: str
@@ -87,11 +154,12 @@ class SessionRevokeRequest(BaseModel):
             raise ValueError("Invalid EVM user address format")
         return v
 
+
 class SessionExtendRequest(BaseModel):
     sessionId: str
     userAddress: str
-    additionalHours: int = Field(gt=0, le=168, description="Extension duration must be between 1 and 168 hours")
-    additionalCapBNB: float = Field(ge=0, le=50.0, description="Additional cap must be positive")
+    additionalHours: int = Field(gt=0, le=168)
+    additionalCapBNB: float = Field(ge=0, le=50.0)
     txHash: Optional[str] = None
 
     @field_validator("userAddress")
@@ -101,19 +169,42 @@ class SessionExtendRequest(BaseModel):
             raise ValueError("Invalid EVM user address format")
         return v
 
+
 class TaskSimulateRequest(BaseModel):
     sessionId: str
     agentId: str
     taskType: str
-    amountBNB: float = Field(gt=0, le=10.0, description="Task spend amount must be positive")
+    amountBNB: float = Field(gt=0, le=10.0)
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
+
 def _resolve_agent(agent_id: str) -> Optional[Dict[str, Any]]:
     for a in REFERENCE_AGENTS:
         if a["id"] == agent_id or a["contractAddress"].lower() == agent_id.lower():
             return a
     return None
+
+
+def _session_to_dict(s: AltanaSession) -> dict:
+    return {
+        "sessionId": s.session_id,
+        "userAddress": s.user_address,
+        "agentId": s.agent_id,
+        "agentName": s.agent_name,
+        "agentContract": s.agent_contract,
+        "spendCapBNB": s.spend_cap_bnb,
+        "spentAmountBNB": s.spent_amount_bnb,
+        "createdAt": s.created_at,
+        "expiresAt": s.expires_at,
+        "durationHours": s.duration_hours,
+        "status": s.status,
+        "txHash": s.tx_hash,
+        "bscscanUrl": f"https://testnet.bscscan.com/tx/{s.tx_hash}" if s.tx_hash else None,
+        "nonce": s.nonce,
+        "source": s.source,
+        "activityLog": s.activity_log or [],
+    }
 
 
 def _check_rpc_status() -> Dict[str, Any]:
@@ -127,7 +218,145 @@ def _check_rpc_status() -> Dict[str, Any]:
     return {"connected": False, "latestBlock": None}
 
 
-# ─── Endpoints ────────────────────────────────────────────────────────────────
+# ─── Auth Endpoints ───────────────────────────────────────────────────────────
+
+@app.post("/api/auth/register", status_code=201)
+async def auth_register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
+    user = await register_user(req.email, req.password, req.display_name or "", db)
+    access_token = create_access_token(user.id, user.is_admin)
+    refresh_token = await create_refresh_token(user.id, db)
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "display_name": user.display_name,
+            "wallet_address": user.wallet_address,
+            "is_admin": user.is_admin,
+        },
+    }
+
+
+@app.post("/api/auth/login")
+async def auth_login(req: LoginRequest, db: AsyncSession = Depends(get_db)):
+    user = await authenticate_user(req.email, req.password, db)
+    access_token = create_access_token(user.id, user.is_admin)
+    refresh_token = await create_refresh_token(user.id, db)
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "display_name": user.display_name,
+            "wallet_address": user.wallet_address,
+            "is_admin": user.is_admin,
+        },
+    }
+
+
+@app.post("/api/auth/refresh")
+async def auth_refresh(req: RefreshRequest, db: AsyncSession = Depends(get_db)):
+    new_refresh, user = await rotate_refresh_token(req.refresh_token, db)
+    access_token = create_access_token(user.id, user.is_admin)
+    return {
+        "access_token": access_token,
+        "refresh_token": new_refresh,
+        "token_type": "bearer",
+    }
+
+
+@app.post("/api/auth/logout")
+async def auth_logout(req: LogoutRequest, db: AsyncSession = Depends(get_db)):
+    # Best-effort delete — don't error if token not found
+    from auth import _sha256
+    from database import RefreshToken
+    result = await db.execute(
+        select(RefreshToken).where(RefreshToken.token_hash == _sha256(req.refresh_token))
+    )
+    rt = result.scalar_one_or_none()
+    if rt:
+        await db.delete(rt)
+        await db.commit()
+    return {"success": True}
+
+
+@app.post("/api/auth/forgot-password")
+async def auth_forgot_password(req: ForgotPasswordRequest, db: AsyncSession = Depends(get_db)):
+    await request_password_reset(req.email, db)
+    return {"success": True, "message": "If that email is registered, a reset link has been sent."}
+
+
+@app.post("/api/auth/reset-password")
+async def auth_reset_password(req: ResetPasswordRequest, db: AsyncSession = Depends(get_db)):
+    await complete_password_reset(req.token, req.new_password, db)
+    return {"success": True, "message": "Password updated successfully."}
+
+
+# ─── User Endpoints ───────────────────────────────────────────────────────────
+
+@app.get("/api/users/me")
+async def get_me(current_user: User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "display_name": current_user.display_name,
+        "wallet_address": current_user.wallet_address,
+        "is_admin": current_user.is_admin,
+        "created_at": current_user.created_at.isoformat() if current_user.created_at else None,
+    }
+
+
+@app.patch("/api/users/me")
+async def update_me(
+    req: UpdateProfileRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    if req.display_name is not None:
+        current_user.display_name = req.display_name
+    if req.wallet_address is not None:
+        current_user.wallet_address = req.wallet_address
+    current_user.updated_at = datetime.now(timezone.utc)
+    await db.merge(current_user)
+    await db.commit()
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "display_name": current_user.display_name,
+        "wallet_address": current_user.wallet_address,
+    }
+
+
+@app.get("/api/users/")
+async def list_users(
+    _: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=200),
+):
+    result = await db.execute(select(User).offset(skip).limit(limit))
+    users = result.scalars().all()
+    return {
+        "total": len(users),
+        "users": [
+            {
+                "id": u.id,
+                "email": u.email,
+                "display_name": u.display_name,
+                "wallet_address": u.wallet_address,
+                "is_admin": u.is_admin,
+                "created_at": u.created_at.isoformat() if u.created_at else None,
+            }
+            for u in users
+        ],
+    }
+
+
+# ─── Health ───────────────────────────────────────────────────────────────────
 
 @app.get("/api/health")
 def get_health():
@@ -142,11 +371,7 @@ def get_health():
             "url": settings.BSC_TESTNET_RPC,
             **rpc_status,
         },
-        "indexer": {
-            "activeSessionsTracked": len([s for s in session_ledger.values() if s.get("status") == "active"]),
-            "totalSessionsTracked": len(session_ledger),
-            **live_stats,
-        },
+        "indexer": live_stats,
         "contracts": {
             "altanaSessionManager": settings.ALTANA_SESSION_MANAGER_ADDR,
             "pancakeV3Router": settings.PANCAKE_V3_ROUTER,
@@ -157,6 +382,8 @@ def get_health():
     }
 
 
+# ─── Agents ───────────────────────────────────────────────────────────────────
+
 @app.get("/api/agents")
 async def get_agents(
     category: Optional[str] = Query(None),
@@ -164,9 +391,6 @@ async def get_agents(
     verified_only: bool = Query(False),
 ):
     agents = list(REFERENCE_AGENTS)
-
-    # Optionally enrich with live onchain tx counts from BscScan
-    # (done async, non-blocking — enriched data arrives on next poll)
     if category and category != "All":
         agents = [a for a in agents if a["category"].lower() == category.lower()]
     if search:
@@ -180,7 +404,6 @@ async def get_agents(
         ]
     if verified_only:
         agents = [a for a in agents if a.get("verified")]
-
     return {
         "network": "BSC Testnet",
         "chainId": settings.CHAIN_ID,
@@ -194,36 +417,46 @@ async def get_agent_by_id(agent_id: str, enrich: bool = Query(False)):
     agent = _resolve_agent(agent_id)
     if not agent:
         raise HTTPException(status_code=404, detail="Agent not found")
-
     result = dict(agent)
-
     if enrich:
-        # Fetch live tx count from BscScan for additional telemetry
         try:
             live_tx_count = await fetch_bscscan_address_txcount(agent["contractAddress"])
             result["liveTransactionCount"] = live_tx_count
         except Exception:
             pass
-
     return result
 
 
+# ─── Sessions (DB-backed) ─────────────────────────────────────────────────────
+
 @app.get("/api/sessions/{user_address}")
-def get_user_sessions(user_address: str):
-    sessions = fetch_sessions_for_user(user_address)
-    active = [s for s in sessions if s.get("status") == "active"]
-    revoked = [s for s in sessions if s.get("status") == "revoked"]
+async def get_user_sessions(
+    user_address: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(AltanaSession).where(AltanaSession.user_address == user_address.lower())
+    )
+    sessions = result.scalars().all()
+    dicts = [_session_to_dict(s) for s in sessions]
+    active = [s for s in dicts if s["status"] == "active"]
+    revoked = [s for s in dicts if s["status"] == "revoked"]
     return {
         "userAddress": user_address,
-        "totalSessions": len(sessions),
+        "totalSessions": len(dicts),
         "activeSessions": active,
         "revokedSessions": revoked,
-        "sessions": sessions,
+        "sessions": dicts,
     }
 
 
 @app.post("/api/sessions/register")
-def register_session(req: SessionCreateRequest):
+async def register_session(
+    req: SessionCreateRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     agent = _resolve_agent(req.agentId)
     if not agent:
         raise HTTPException(status_code=404, detail="Target agent not found")
@@ -233,64 +466,72 @@ def register_session(req: SessionCreateRequest):
     expires_at = now + (req.durationHours * 3600)
     tx_hash = req.txHash or ("0x" + uuid.uuid4().hex)
 
-    session_data = {
-        "sessionId": session_id,
-        "userAddress": req.userAddress,
-        "agentId": agent["id"],
-        "agentName": agent["name"],
-        "agentContract": agent["contractAddress"],
-        "spendCapBNB": req.spendCapBNB,
-        "spentAmountBNB": 0.0,
-        "createdAt": now,
-        "expiresAt": expires_at,
-        "durationHours": req.durationHours,
-        "status": "active",
+    activity_log = [{
+        "action": "Session Authorized & Spend Cap Registered",
+        "timestamp": now,
+        "amountBNB": 0.0,
         "txHash": tx_hash,
-        "bscscanUrl": f"https://testnet.bscscan.com/tx/{tx_hash}",
-        "nonce": 0,
-        "source": "local",
-        "activityLog": [
-            {
-                "action": "Session Authorized & Spend Cap Registered",
-                "timestamp": now,
-                "amountBNB": 0.0,
-                "txHash": tx_hash,
-            }
-        ],
-    }
+    }]
 
-    session_ledger[session_id] = session_data
+    session = AltanaSession(
+        session_id=session_id,
+        user_id=current_user.id,
+        user_address=req.userAddress.lower(),
+        agent_id=agent["id"],
+        agent_name=agent["name"],
+        agent_contract=agent["contractAddress"],
+        spend_cap_bnb=req.spendCapBNB,
+        spent_amount_bnb=0.0,
+        created_at=now,
+        expires_at=expires_at,
+        duration_hours=req.durationHours,
+        status="active",
+        tx_hash=tx_hash,
+        nonce=0,
+        source="local",
+        activity_log=activity_log,
+    )
+    db.add(session)
+    await db.commit()
+    await db.refresh(session)
     return {
         "success": True,
         "message": "Altana session registered",
-        "session": session_data,
+        "session": _session_to_dict(session),
     }
 
 
 @app.post("/api/sessions/revoke")
-def revoke_session(req: SessionRevokeRequest):
-    if req.sessionId not in session_ledger:
+async def revoke_session(
+    req: SessionRevokeRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(AltanaSession).where(AltanaSession.session_id == req.sessionId)
+    )
+    session = result.scalar_one_or_none()
+    if not session:
         raise HTTPException(status_code=404, detail="Session not found in ledger")
-
-    session = session_ledger[req.sessionId]
-    if session.get("userAddress", "").lower() != req.userAddress.lower():
+    if session.user_address.lower() != req.userAddress.lower():
         raise HTTPException(status_code=403, detail="Unauthorized to revoke this session")
-    if session.get("status") == "revoked":
+    if session.status == "revoked":
         raise HTTPException(status_code=400, detail="Session already revoked")
 
     now = int(time.time())
     revoke_tx = req.txHash or ("0x" + uuid.uuid4().hex)
-
-    session["status"] = "revoked"
-    session["revokedAt"] = now
-    session["revokeTxHash"] = revoke_tx
-    session["activityLog"].insert(0, {
+    session.status = "revoked"
+    session.revoked_at = now
+    session.revoke_tx_hash = revoke_tx
+    log = session.activity_log or []
+    log.insert(0, {
         "action": "Emergency Revocation Executed Onchain",
         "timestamp": now,
         "amountBNB": 0.0,
         "txHash": revoke_tx,
     })
-
+    session.activity_log = log
+    await db.commit()
     return {
         "success": True,
         "message": "Session revoked instantly",
@@ -301,91 +542,109 @@ def revoke_session(req: SessionRevokeRequest):
 
 
 @app.post("/api/sessions/extend")
-def extend_session(req: SessionExtendRequest):
-    """Extends session duration and/or spend cap (for UI extendSession() flow)."""
-    if req.sessionId not in session_ledger:
+async def extend_session(
+    req: SessionExtendRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(AltanaSession).where(AltanaSession.session_id == req.sessionId)
+    )
+    session = result.scalar_one_or_none()
+    if not session:
         raise HTTPException(status_code=404, detail="Session not found")
-
-    session = session_ledger[req.sessionId]
-    if session.get("userAddress", "").lower() != req.userAddress.lower():
+    if session.user_address.lower() != req.userAddress.lower():
         raise HTTPException(status_code=403, detail="Unauthorized")
-    if session.get("status") == "revoked":
+    if session.status == "revoked":
         raise HTTPException(status_code=400, detail="Cannot extend a revoked session")
 
     now = int(time.time())
     extend_tx = req.txHash or ("0x" + uuid.uuid4().hex)
-
-    session["expiresAt"] = session["expiresAt"] + (req.additionalHours * 3600)
-    session["spendCapBNB"] = round(session["spendCapBNB"] + req.additionalCapBNB, 6)
-    session["activityLog"].insert(0, {
+    session.expires_at = session.expires_at + (req.additionalHours * 3600)
+    session.spend_cap_bnb = round(session.spend_cap_bnb + req.additionalCapBNB, 6)
+    log = session.activity_log or []
+    log.insert(0, {
         "action": f"Session Extended +{req.additionalHours}h, +{req.additionalCapBNB} tBNB cap",
         "timestamp": now,
         "amountBNB": 0.0,
         "txHash": extend_tx,
     })
-
+    session.activity_log = log
+    await db.commit()
     return {
         "success": True,
         "message": "Session extended",
         "sessionId": req.sessionId,
-        "newExpiresAt": session["expiresAt"],
-        "newSpendCapBNB": session["spendCapBNB"],
+        "newExpiresAt": session.expires_at,
+        "newSpendCapBNB": session.spend_cap_bnb,
         "txHash": extend_tx,
     }
 
 
 @app.post("/api/agents/simulate-task")
-def simulate_task(req: TaskSimulateRequest):
-    if req.sessionId not in session_ledger:
+async def simulate_task(
+    req: TaskSimulateRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(AltanaSession).where(AltanaSession.session_id == req.sessionId)
+    )
+    session = result.scalar_one_or_none()
+    if not session:
         raise HTTPException(status_code=404, detail="Active Altana session required")
-
-    session = session_ledger[req.sessionId]
-    if session["status"] != "active":
-        raise HTTPException(status_code=400, detail=f"Session is {session['status']} — cannot execute")
+    if session.status != "active":
+        raise HTTPException(status_code=400, detail=f"Session is {session.status} — cannot execute")
 
     now = int(time.time())
-    if session.get("expiresAt", 0) < now:
-        session["status"] = "expired"
+    if session.expires_at < now:
+        session.status = "expired"
+        await db.commit()
         raise HTTPException(status_code=400, detail="Session has expired")
 
-    remaining = session["spendCapBNB"] - session["spentAmountBNB"]
+    remaining = session.spend_cap_bnb - session.spent_amount_bnb
     if req.amountBNB > remaining:
         raise HTTPException(
             status_code=400,
             detail=f"Spend cap exceeded! Remaining: {remaining:.4f} tBNB, Requested: {req.amountBNB:.4f} tBNB",
         )
 
-    session["spentAmountBNB"] = round(session["spentAmountBNB"] + req.amountBNB, 6)
-    session["nonce"] += 1
     exec_tx = "0x" + uuid.uuid4().hex
-
-    session["activityLog"].insert(0, {
+    session.spent_amount_bnb = round(session.spent_amount_bnb + req.amountBNB, 6)
+    session.nonce += 1
+    log = session.activity_log or []
+    log.insert(0, {
         "action": f"Executed: {req.taskType}",
         "timestamp": now,
         "amountBNB": req.amountBNB,
         "txHash": exec_tx,
         "gasSaved": "~42% vs manual (Altana batch routing)",
     })
-
+    session.activity_log = log
+    await db.commit()
     return {
         "success": True,
         "action": req.taskType,
         "amountSpent": req.amountBNB,
-        "remainingSpendCap": round(session["spendCapBNB"] - session["spentAmountBNB"], 6),
+        "remainingSpendCap": round(session.spend_cap_bnb - session.spent_amount_bnb, 6),
         "txHash": exec_tx,
         "bscscanUrl": f"https://testnet.bscscan.com/tx/{exec_tx}",
-        "sessionNonce": session["nonce"],
+        "sessionNonce": session.nonce,
     }
 
 
+# ─── Stats / TermiX / BscScan Proxy ──────────────────────────────────────────
+
 @app.get("/api/stats")
-def get_protocol_stats():
+async def get_protocol_stats(db: AsyncSession = Depends(get_db)):
     total_vol = sum(a["totalVolumeProtectedBNB"] for a in REFERENCE_AGENTS)
     total_gas = sum(a["gasSavedBNB"] for a in REFERENCE_AGENTS)
     total_jobs = sum(a["totalJobs"] for a in REFERENCE_AGENTS)
-    active_sessions = len([s for s in session_ledger.values() if s.get("status") == "active"])
+    result = await db.execute(
+        select(AltanaSession).where(AltanaSession.status == "active")
+    )
+    active_sessions = len(result.scalars().all())
     live = get_live_protocol_stats()
-
     return {
         "network": settings.NETWORK_NAME,
         "chainId": settings.CHAIN_ID,

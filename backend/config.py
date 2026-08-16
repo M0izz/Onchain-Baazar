@@ -32,6 +32,26 @@ class Settings(BaseModel):
     CHAIN_ID: int = 97
     NETWORK_NAME: str = "BSC Testnet"
 
+    # ── Database ──────────────────────────────────────────────────────────────
+    # asyncpg driver URL for SQLAlchemy: postgresql+asyncpg://user:pass@host/db
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/onchain_bazaar",
+    )
+
+    # ── JWT Auth ──────────────────────────────────────────────────────────────
+    JWT_SECRET: str = os.getenv("JWT_SECRET", "CHANGE_ME_IN_PRODUCTION_USE_RANDOM_32_CHARS")
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "15"))
+    REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "30"))
+
+    # ── Email (Resend) ────────────────────────────────────────────────────────
+    RESEND_API_KEY: str = os.getenv("RESEND_API_KEY", "")
+    EMAIL_FROM_DOMAIN: str = os.getenv("EMAIL_FROM_DOMAIN", "onchainbazaar.xyz")
+
+    # ── Frontend (for reset-password links) ───────────────────────────────────
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
     BSC_TESTNET_RPC: str = os.getenv(
         "BSC_TESTNET_RPC",
         "https://data-seed-prebsc-1-s1.binance.org:8545/"
