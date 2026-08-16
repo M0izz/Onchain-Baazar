@@ -6,7 +6,7 @@
 
   > *"Hire Onchain. Cap the Spend. Revoke Anytime."*
 
-  [![Live Demo](https://img.shields.io/badge/%E2%96%B2%20LIVE%20DEMO-ONCHAIN--BAZAAR.VERCEL.APP-0070F3?style=for-the-badge&logo=vercel&logoColor=white)](https://github.com/M0izz/Onchain-Baazar)
+
   [![BNB Chain](https://img.shields.io/badge/BNB%20CHAIN-BUILD%20THE%20ERA-F3BA2F?style=for-the-badge&logo=binance&logoColor=black)](https://www.bnbchain.org)
   [![ERC-8004](https://img.shields.io/badge/ERC--8004-AGENT%20MARKETPLACE-2EE6D6?style=for-the-badge&logo=ethereum&logoColor=black)](https://github.com/M0izz/Onchain-Baazar)
   [![Altana Protocol](https://img.shields.io/badge/ALTANA-SESSION%20KEYS-FF3EA5?style=for-the-badge&logo=shield&logoColor=white)](#altana-spend-capped-session-keys-engine)
