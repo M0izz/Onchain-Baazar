@@ -287,47 +287,55 @@ function AppContent() {
         onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
-      {/* Main Content */}
+      {/* Main Content — each tab is keyed so the fade-in re-triggers on switch */}
       <main className="flex-1">
         {activeTab === "landing" && (
-          <LandingPage
-            onExploreMarketplace={() => navigateTo("marketplace")}
-            onLaunchPancakeTerminal={() => navigateTo("pancakeswap")}
-            onViewTermiX={() => navigateTo("termix")}
-            account={account}
-            onConnect={connectWallet}
-            onSelectAgentForHire={(agent) => {
-              if (!account) connectWallet();
-              setSelectedAgentForHire(agent);
-            }}
-          />
+          <div key="landing" className="tab-view">
+            <LandingPage
+              onExploreMarketplace={() => navigateTo("marketplace")}
+              onLaunchPancakeTerminal={() => navigateTo("pancakeswap")}
+              onViewTermiX={() => navigateTo("termix")}
+              account={account}
+              onConnect={connectWallet}
+              onSelectAgentForHire={(agent) => {
+                if (!account) connectWallet();
+                setSelectedAgentForHire(agent);
+              }}
+            />
+          </div>
         )}
 
         {activeTab === "marketplace" && (
-          <AgentDirectory
-            agents={agents}
-            onHireAgent={(agent) => {
-              if (!account) connectWallet();
-              setSelectedAgentForHire(agent);
-            }}
-            comparedAgents={comparedAgents}
-            onToggleCompare={handleToggleCompare}
-            onOpenCompareModal={() => setIsCompareModalOpen(true)}
-            onLaunchPancakeTerminal={() => navigateTo("pancakeswap")}
-            stats={protocolStats}
-          />
+          <div key="marketplace" className="tab-view">
+            <AgentDirectory
+              agents={agents}
+              onHireAgent={(agent) => {
+                if (!account) connectWallet();
+                setSelectedAgentForHire(agent);
+              }}
+              comparedAgents={comparedAgents}
+              onToggleCompare={handleToggleCompare}
+              onOpenCompareModal={() => setIsCompareModalOpen(true)}
+              onLaunchPancakeTerminal={() => navigateTo("pancakeswap")}
+              stats={protocolStats}
+            />
+          </div>
         )}
 
         {activeTab === "pancakeswap" && (
-          <PancakeSwapPanel
-            activeSessions={activeSessionsOnly}
-            onExecuteAgentTask={handleExecuteAgentTask}
-            isDevMode={isDevMode}
-          />
+          <div key="pancakeswap" className="tab-view">
+            <PancakeSwapPanel
+              activeSessions={activeSessionsOnly}
+              onExecuteAgentTask={handleExecuteAgentTask}
+              isDevMode={isDevMode}
+            />
+          </div>
         )}
 
         {activeTab === "termix" && (
-          <TermiXReport matrixData={matrixData} />
+          <div key="termix" className="tab-view">
+            <TermiXReport matrixData={matrixData} />
+          </div>
         )}
       </main>
 

@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Global smooth scroll ───────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Sticky-nav offset for in-page anchor targets ───────────────────────────── */
+/* Navbar is ~56px tall. scroll-margin-top ensures section headings are not    */
+/* hidden behind the sticky bar when an anchor link scrolls to them.           */
+section[id] {
+  scroll-margin-top: 64px;
+}
+
+/* ── Tab view fade transition ───────────────────────────────────────────────── */
+.tab-view {
+  animation: tabFadeIn 0.18s ease-out both;
+}
+
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
 /* Onchain Bazaar - Editorial Paper Design System */
 :root {
   --paper: #EAE6D9;
