@@ -13,6 +13,7 @@ import AuthModal from "./components/auth/AuthModal";
 import ResetPasswordPage from "./components/auth/ResetPasswordPage";
 import UserProfilePanel from "./components/UserProfilePanel";
 import AdminPanel from "./components/AdminPanel";
+import WalletModal from "./components/WalletModal";
 
 import { AGENTS_DATA } from "./data/agents";
 import {
@@ -26,9 +27,9 @@ import {
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 // ── Protected Tab Wrapper ──────────────────────────────────────────────────────
-// If the user tries to navigate to a protected tab without being logged in,
-// redirect them back to the marketplace and prompt sign-in.
-const PROTECTED_TABS = ["pancakeswap", "sessions"];
+// All inner app workspaces require an authenticated account.
+// Unauthenticated users are shown the landing page and prompted to sign in.
+const PROTECTED_TABS = ["marketplace", "pancakeswap", "termix", "sessions"];
 
 function AppContent() {
   const { isAuthenticated, accessToken, loading: authLoading } = useAuth();
@@ -57,6 +58,7 @@ function AppContent() {
   const [authModalTab, setAuthModalTab] = useState("login");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
   // ── Fetch initial data ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -85,6 +87,15 @@ function AppContent() {
     }
   }, [isAuthenticated, account]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Auto-navigate into Marketplace upon login, Landing upon logout ────────
+  useEffect(() => {
+    if (isAuthenticated) {
+      setActiveTab((prev) => (prev === "landing" ? "marketplace" : prev));
+    } else {
+      setActiveTab("landing");
+    }
+  }, [isAuthenticated]);
+
   // ── Tab navigation with auth guard ─────────────────────────────────────────
   const navigateTo = (tab) => {
     if (PROTECTED_TABS.includes(tab) && !isAuthenticated) {
@@ -95,26 +106,46 @@ function AppContent() {
     setActiveTab(tab);
   };
 
-  // ── Wallet ─────────────────────────────────────────────────────────────────
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      const devWallet = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
-      setAccount(devWallet);
-      setIsDevMode(true);
+  // ── Wallet Management ──────────────────────────────────────────────────────
+  const openWalletConnect = () => {
+    if (!isAuthenticated) {
+      setAuthModalTab("login");
+      setIsAuthModalOpen(true);
       return;
     }
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const accounts = await provider.send("eth_requestAccounts", []);
-      if (accounts.length > 0) {
-        setAccount(accounts[0]);
-        const network = await provider.getNetwork();
-        setIsCorrectNetwork(Number(network.chainId) === BSC_TESTNET_CHAIN_ID);
-        fetchUserSessions(accounts[0]);
-      }
-    } catch (err) {
-      console.error("Wallet connection failed:", err);
+    setIsWalletModalOpen(true);
+  };
+
+  const handleConnectRealWallet = async () => {
+    if (!window.ethereum) {
+      throw new Error("No browser wallet (MetaMask) detected. Please install a Web3 wallet extension.");
     }
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const accounts = await provider.send("eth_requestAccounts", []);
+    if (accounts.length > 0) {
+      setAccount(accounts[0]);
+      setIsDevMode(false);
+      const network = await provider.getNetwork();
+      const is97 = Number(network.chainId) === BSC_TESTNET_CHAIN_ID;
+      setIsCorrectNetwork(is97);
+      if (!is97) {
+        try { await switchToBscTestnet(); setIsCorrectNetwork(true); } catch (e) { console.warn(e); }
+      }
+      fetchUserSessions(accounts[0]);
+    }
+  };
+
+  const handleConnectCustomAddress = (addr) => {
+    setAccount(addr);
+    setIsDevMode(false);
+    fetchUserSessions(addr);
+  };
+
+  const handleEnableDevMode = () => {
+    const devWallet = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
+    setAccount(devWallet);
+    setIsDevMode(true);
+    fetchUserSessions(devWallet);
   };
 
   const disconnectWallet = () => {
@@ -122,12 +153,17 @@ function AppContent() {
     setUserSessions([]);
   };
 
+  // ── Helper to always get valid active token ───────────────────────────────
+  const getAuthToken = () => accessToken || (typeof localStorage !== "undefined" ? localStorage.getItem("onchain_bazaar_at") : null);
+
   // ── Sessions ───────────────────────────────────────────────────────────────
   const fetchUserSessions = async (walletAddr) => {
     if (!walletAddr || !isAuthenticated) return;
+    const token = getAuthToken();
+    if (!token) return;
     try {
       const res = await fetch(`${API_BASE}/sessions/${walletAddr}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) { const data = await res.json(); setUserSessions(data.sessions || []); }
     } catch (err) {
@@ -155,11 +191,12 @@ function AppContent() {
       }
     }
 
+    const token = getAuthToken();
     const res = await fetch(`${API_BASE}/sessions/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ userAddress: userAddr, agentId, spendCapBNB, durationHours, txHash }),
     });
@@ -184,9 +221,10 @@ function AppContent() {
       } catch (e) { console.warn("Onchain revoke simulated:", e); }
     }
 
+    const token = getAuthToken();
     const res = await fetch(`${API_BASE}/sessions/revoke`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ sessionId, userAddress: userAddr, txHash: revokeTxHash }),
     });
     if (!res.ok) { const err = await res.json(); throw new Error(err.detail || "Failed to revoke session"); }
@@ -208,9 +246,10 @@ function AppContent() {
       } catch (e) { console.warn("Onchain extend simulated:", e); }
     }
 
+    const token = getAuthToken();
     const res = await fetch(`${API_BASE}/sessions/extend`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ sessionId, userAddress: userAddr, additionalHours, additionalCapBNB: additionalCapBNB || 0, txHash: extendTxHash }),
     });
     if (!res.ok) { const err = await res.json(); throw new Error(err.detail || "Failed to extend session"); }
@@ -218,9 +257,10 @@ function AppContent() {
   };
 
   const handleExecuteAgentTask = async ({ sessionId, agentId, taskType, amountBNB }) => {
+    const token = getAuthToken();
     const res = await fetch(`${API_BASE}/agents/simulate-task`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ sessionId, agentId, taskType, amountBNB }),
     });
     if (!res.ok) { const err = await res.json(); throw new Error(err.detail || "Task execution failed"); }
@@ -255,24 +295,12 @@ function AppContent() {
     );
   }
 
-  // ── Auth loading splash ────────────────────────────────────────────────────
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-[#EAE6D9] flex items-center justify-center">
-        <div className="text-center">
-          <img src="/bazaar-robot.png" alt="Loading" className="w-12 h-12 mx-auto mb-3 animate-pulse" />
-          <p className="text-[#4A4A43] font-plex-mono text-sm">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-[#EAE6D9] text-[#1B1B18]">
 
       <Navbar
         account={account}
-        onConnect={connectWallet}
+        onConnect={openWalletConnect}
         onDisconnect={disconnectWallet}
         onSwitchNetwork={switchToBscTestnet}
         isCorrectNetwork={isCorrectNetwork}
@@ -285,6 +313,7 @@ function AppContent() {
         onOpenAuthModal={() => { setAuthModalTab("login"); setIsAuthModalOpen(true); }}
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenWalletModal={openWalletConnect}
       />
 
       {/* Main Content — each tab is keyed so the fade-in re-triggers on switch */}
@@ -296,9 +325,14 @@ function AppContent() {
               onLaunchPancakeTerminal={() => navigateTo("pancakeswap")}
               onViewTermiX={() => navigateTo("termix")}
               account={account}
-              onConnect={connectWallet}
+              onConnect={openWalletConnect}
               onSelectAgentForHire={(agent) => {
-                if (!account) connectWallet();
+                if (!isAuthenticated) {
+                  setAuthModalTab("login");
+                  setIsAuthModalOpen(true);
+                  return;
+                }
+                if (!account) openWalletConnect();
                 setSelectedAgentForHire(agent);
               }}
             />
@@ -310,7 +344,12 @@ function AppContent() {
             <AgentDirectory
               agents={agents}
               onHireAgent={(agent) => {
-                if (!account) connectWallet();
+                if (!isAuthenticated) {
+                  setAuthModalTab("login");
+                  setIsAuthModalOpen(true);
+                  return;
+                }
+                if (!account) openWalletConnect();
                 setSelectedAgentForHire(agent);
               }}
               comparedAgents={comparedAgents}
@@ -379,6 +418,18 @@ function AppContent() {
       <AdminPanel
         isOpen={isAdminOpen}
         onClose={() => setIsAdminOpen(false)}
+      />
+
+      <WalletModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        account={account}
+        isCorrectNetwork={isCorrectNetwork}
+        isDevMode={isDevMode}
+        onConnectRealWallet={handleConnectRealWallet}
+        onConnectCustomAddress={handleConnectCustomAddress}
+        onEnableDevMode={handleEnableDevMode}
+        onDisconnect={disconnectWallet}
       />
 
       {/* Footer */}

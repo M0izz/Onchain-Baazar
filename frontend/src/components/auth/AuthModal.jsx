@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Mail, Lock, User, Eye, EyeOff, AlertCircle, Loader } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export default function AuthModal({ isOpen, onClose, initialTab = "login" }) {
   const { login, register, forgotPassword } = useAuth();
   const [tab, setTab] = useState(initialTab); // 'login' | 'register' | 'forgot'
+
+  useEffect(() => {
+    if (isOpen) {
+      setTab(initialTab || "login");
+      setError("");
+    }
+  }, [isOpen, initialTab]);
 
   // Login fields
   const [loginEmail, setLoginEmail] = useState("");

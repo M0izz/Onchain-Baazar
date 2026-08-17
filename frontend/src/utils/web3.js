@@ -98,9 +98,9 @@ export function formatCountdown(expiresAt) {
   const h = Math.floor(diff / 3600);
   const m = Math.floor((diff % 3600) / 60);
   const s = diff % 60;
-  if (h > 0) return `${h}h ${m}m remaining`;
-  if (m > 0) return `${m}m ${s}s remaining`;
-  return `${s}s remaining`;
+  if (h > 0) return `${h}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s left`;
+  if (m > 0) return `${m}m ${s.toString().padStart(2, "0")}s left`;
+  return `${s}s left`;
 }
 
 export async function switchToBscTestnet() {

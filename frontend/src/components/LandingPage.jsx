@@ -19,7 +19,7 @@ export default function LandingPage({
         {/* Geodesic Node Wireframe Globe (Adapts current app colors with NO orange) */}
         <HeroSphere />
 
-        <section className="py-12 md:py-[64px] grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center relative z-10">
+        <section id="overview" className="py-12 md:py-[64px] grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center relative z-10">
           <div>
             {/* Mascot Emblem Badge */}
             <div className="inline-flex items-center gap-2.5 p-1.5 pr-4 rounded-full bg-[#F3F0E4] border border-[#8C6A1E]/35 mb-4 shadow-sm">

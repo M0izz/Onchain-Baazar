@@ -435,18 +435,34 @@ async def get_user_sessions(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    # Strictly query sessions belonging to THIS authenticated user
     result = await db.execute(
-        select(AltanaSession).where(AltanaSession.user_address == user_address.lower())
+        select(AltanaSession)
+        .where(AltanaSession.user_id == current_user.id)
+        .order_by(AltanaSession.created_at.desc())
     )
     sessions = result.scalars().all()
+    now = int(time.time())
+
+    # Check and mark expired sessions
+    updated = False
+    for s in sessions:
+        if s.status == "active" and s.expires_at < now:
+            s.status = "expired"
+            updated = True
+    if updated:
+        await db.commit()
+
     dicts = [_session_to_dict(s) for s in sessions]
     active = [s for s in dicts if s["status"] == "active"]
     revoked = [s for s in dicts if s["status"] == "revoked"]
+    expired = [s for s in dicts if s["status"] == "expired"]
     return {
         "userAddress": user_address,
         "totalSessions": len(dicts),
         "activeSessions": active,
         "revokedSessions": revoked,
+        "expiredSessions": expired,
         "sessions": dicts,
     }
 
@@ -593,6 +609,8 @@ async def simulate_task(
     session = result.scalar_one_or_none()
     if not session:
         raise HTTPException(status_code=404, detail="Active Altana session required")
+    if session.user_id and session.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Unauthorized: session belongs to another account")
     if session.status != "active":
         raise HTTPException(status_code=400, detail=f"Session is {session.status} — cannot execute")
 

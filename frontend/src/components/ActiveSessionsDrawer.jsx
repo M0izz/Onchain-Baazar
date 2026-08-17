@@ -23,10 +23,10 @@ export default function ActiveSessionsDrawer({
   const [expandedId, setExpandedId] = useState(null);
   const [, forceRefresh] = useState(0);
 
-  // Real-time countdown refresh every 10s
+  // Real-time countdown refresh every 1s
   useEffect(() => {
     if (!isOpen) return;
-    const interval = setInterval(() => forceRefresh((n) => n + 1), 10000);
+    const interval = setInterval(() => forceRefresh((n) => n + 1), 1000);
     return () => clearInterval(interval);
   }, [isOpen]);
 
