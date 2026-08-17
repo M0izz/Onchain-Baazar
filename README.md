@@ -263,7 +263,7 @@ npm run dev
 
 ## License & Hackathon Credits
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
+Distributed under the **MIT License**. See [LICENSE](./LICENSE.md) for details.
 
 <div align="center">
   <sub>Built for BNB Smart Chain's Build the Era Hackathon</sub>
